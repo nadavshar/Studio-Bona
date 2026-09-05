@@ -17,7 +17,7 @@
     --mauve-soft:#fbe7d6;
     --shadow: 0 26px 60px -28px rgba(50,20,45,.32);
     --shadow-sm: 0 12px 28px -16px rgba(50,20,45,.24);
-    --overlay-rgb: 32,16,30;
+    --overlay-rgb: 76,28,52;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -34,7 +34,7 @@
       --mauve-soft:#3a2c22;
       --shadow: 0 26px 60px -24px rgba(0,0,0,.6);
       --shadow-sm: 0 12px 28px -16px rgba(0,0,0,.5);
-      --overlay-rgb: 10,6,4;
+      --overlay-rgb: 48,16,36;
     }
   }
   :root[data-theme="dark"]{
@@ -51,7 +51,7 @@
     --mauve-soft:#3a2c22;
     --shadow: 0 26px 60px -24px rgba(0,0,0,.6);
     --shadow-sm: 0 12px 28px -16px rgba(0,0,0,.5);
-    --overlay-rgb: 10,6,4;
+    --overlay-rgb: 48,16,36;
   }
 
   *{box-sizing:border-box;}
@@ -591,8 +591,8 @@
             <span>🔊 רועש</span>
           </div>
           <div class="channel-toggle avail-mode-toggle" role="group" aria-label="תצוגה">
-            <button type="button" class="channel-btn" id="avail-mode-week" aria-pressed="true">שבועי</button>
-            <button type="button" class="channel-btn" id="avail-mode-day" aria-pressed="false">יומי</button>
+            <button type="button" class="channel-btn" id="avail-mode-day" aria-pressed="true">יומי</button>
+            <button type="button" class="channel-btn" id="avail-mode-week" aria-pressed="false">שבועי</button>
           </div>
         </div>
       </div>
@@ -608,8 +608,8 @@
         <span>סטודיו 2</span>
       </div>
 
-      <div id="avail-week-view" class="avail-week"></div>
-      <div id="avail-day-view" class="avail-day-timeline" hidden></div>
+      <div id="avail-week-view" class="avail-week" hidden></div>
+      <div id="avail-day-view" class="avail-day-timeline"></div>
 
       <p class="avail-note">רוצות.ים לשריין מועד שרואות.ים כאן פנוי? מלאו את הטופס למטה ונחזור אליכן.ם לאישור.</p>
     </div>
@@ -706,11 +706,6 @@
       </div>
 
       <form class="inquiry" id="inquiry-form">
-        <div class="channel-toggle" role="group" aria-label="ערוץ שליחה">
-          <button type="button" class="channel-btn" id="ch-whatsapp" aria-pressed="true">שליחה בוואטסאפ</button>
-          <button type="button" class="channel-btn" id="ch-email" aria-pressed="false">שליחה במייל</button>
-        </div>
-
         <div class="frow">
           <div class="field"><label for="f-name">שם מלא</label><input id="f-name" required placeholder="השם שלך"></div>
           <div class="field"><label for="f-phone">טלפון</label><input id="f-phone" type="tel" required placeholder="050-000-0000"></div>
@@ -743,7 +738,7 @@
         <div class="field"><label for="f-notes">עוד משהו שכדאי שנדע?</label><textarea id="f-notes" placeholder="מספר משתתפים, רמת רעש, בקשות מיוחדות..."></textarea></div>
 
         <button type="submit" class="submit-btn" id="submit-btn">שליחה בוואטסאפ</button>
-        <p class="form-note">הפרטים נשלחים ישירות אלינו — לא נשמרים באתר.</p>
+        <p class="form-note">הפנייה נפתחת בוואטסאפ ונשלחת אלינו ישירות — לא נשמרת באתר.</p>
       </form>
     </div>
   </div>
@@ -1069,7 +1064,7 @@
 
     function dateOf(day){ return new Date(day.date + 'T12:00:00+03:00'); }
 
-    var mode = 'week'; // 'week' | 'day'
+    var mode = 'day'; // 'week' | 'day' — daily view is the default; only one is ever shown
     var weekStart = 0;  // index into days[] for first visible week
     var dayIndex = 0;   // index into days[] for day view
     var WEEK_SIZE = 7;
@@ -1296,21 +1291,7 @@
   document.getElementById('sm-close').addEventListener('click', function(){ sm.classList.remove('open'); });
   sm.addEventListener('click', function(e){ if(e.target === sm) sm.classList.remove('open'); });
 
-  // Contact form -> WhatsApp / email handoff
-  var channel = 'whatsapp';
-  var chWa = document.getElementById('ch-whatsapp');
-  var chEmail = document.getElementById('ch-email');
-  var submitBtn = document.getElementById('submit-btn');
-
-  function setChannel(c){
-    channel = c;
-    chWa.setAttribute('aria-pressed', c === 'whatsapp');
-    chEmail.setAttribute('aria-pressed', c === 'email');
-    submitBtn.textContent = c === 'whatsapp' ? 'שליחה בוואטסאפ' : 'שליחה במייל';
-  }
-  chWa.addEventListener('click', function(){ setChannel('whatsapp'); });
-  chEmail.addEventListener('click', function(){ setChannel('email'); });
-
+  // Contact form -> WhatsApp handoff
   var eventsCtaBtn = document.getElementById('events-cta-btn');
   if (eventsCtaBtn){
     eventsCtaBtn.addEventListener('click', function(){
@@ -1351,14 +1332,8 @@
     if(notes) lines.push('הערות: ' + notes);
     var text = lines.join('\n');
 
-    if(channel === 'whatsapp'){
-      var waUrl = 'https://wa.me/972533234304?text=' + encodeURIComponent(text);
-      window.open(waUrl, '_blank', 'noopener');
-    } else {
-      var subject = encodeURIComponent('בקשת הזמנה - ' + name);
-      var mailUrl = 'mailto:bonaartstlv@gmail.com?subject=' + subject + '&body=' + encodeURIComponent(text);
-      window.location.href = mailUrl;
-    }
+    var waUrl = 'https://wa.me/972533234304?text=' + encodeURIComponent(text);
+    window.open(waUrl, '_blank', 'noopener');
   });
 })();
 </script>
