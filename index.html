@@ -209,6 +209,25 @@
 
   /* ---------- INFO BAND ---------- */
   .info-band{ background:var(--surface-soft); }
+  /* "מה יש במקום" only — local eggplant-wine tint. Overriding the tokens
+     here (not globally) means every rule below that already reads
+     var(--surface)/var(--ink)/etc. picks it up automatically, while the
+     rest of the site (including the contact section, which shares the
+     .info-band class) keeps the site-wide dark-brown palette. */
+  #whats-here{
+    color:var(--ink); /* re-resolves inherited text color (h2/h4 have none of their own) against the local override below */
+    --surface:#3f1830;
+    --surface-soft:#4d2039;
+    --pale-blue:#33223f;
+    --ink:#f6ece9;
+    --ink-soft:#d1a8c2;
+    --line:#5a2f4d;
+    --violet:#e08fd1;
+    --violet-deep:#f2b3e6;
+    --mauve-soft:#4a2c3c;
+    --shadow: 0 26px 60px -28px rgba(15,4,14,.55);
+    --shadow-sm: 0 12px 28px -16px rgba(15,4,14,.45);
+  }
   .info-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:28px; }
   @media (max-width:900px){ .info-grid{ grid-template-columns:repeat(2,1fr); } }
   @media (max-width:520px){ .info-grid{ grid-template-columns:1fr; } }
@@ -492,7 +511,7 @@
   </div>
 </div>
 
-<section class="info-band">
+<section class="info-band" id="whats-here">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">פרטים שימושיים</span>
