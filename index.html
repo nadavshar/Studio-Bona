@@ -289,15 +289,21 @@
   .avail-wk-slots{ display:flex; flex-direction:column; gap:3px; }
   .avail-wk-chip{ font-size:.68rem; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:2px 4px; text-align:center; }
   .avail-wk-free{ font-size:.7rem; color:#8fd6a4; text-align:center; font-weight:600; }
-  /* public / open-to-all classes — a real button, styled to stand out
-     from the plain occupied/free chips so it reads as clickable */
+  /* public / open-to-all classes — a real button, but at rest it matches
+     the plain occupied chip exactly; only on hover/focus does it reveal
+     the class title and switch to the distinct violet styling */
   .avail-wk-chip.avail-wk-chip-public{
     display:block; width:100%; font:inherit; text-align:center; cursor:pointer;
-    background:var(--mauve-soft); border-color:var(--violet); color:var(--ink);
-    font-weight:600; transition:border-color .15s ease;
+    color:var(--ink); transition:background .15s ease, border-color .15s ease;
   }
-  .avail-wk-chip.avail-wk-chip-public:hover{ border-color:var(--violet-deep); }
-  .avail-chip-title{ display:block; font-weight:700; font-size:.72rem; margin-bottom:1px; }
+  .avail-wk-chip.avail-wk-chip-public:hover, .avail-wk-chip.avail-wk-chip-public:focus-visible{
+    background:var(--mauve-soft); border-color:var(--violet); font-weight:600;
+  }
+  .avail-chip-title{ display:none; }
+  .avail-wk-chip.avail-wk-chip-public:hover .avail-chip-title,
+  .avail-wk-chip.avail-wk-chip-public:focus-visible .avail-chip-title{
+    display:block; font-weight:700; font-size:.72rem; margin-bottom:1px;
+  }
 
   /* day view: two column timeline */
   .avail-day-timeline{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -312,11 +318,19 @@
     position:absolute; left:8px; right:52px; border-radius:8px; padding:5px 8px; font-size:.72rem;
     background:var(--mauve-soft); border:1px solid var(--line); color:var(--ink); overflow:hidden;
   }
+  /* same idea as the week chip above: identical to a plain block at rest,
+     distinct only on hover/focus */
   button.avail-block.avail-block-public{
-    font:inherit; text-align:right; cursor:pointer; border-color:var(--violet);
+    font:inherit; text-align:right; cursor:pointer;
     transition:border-color .15s ease;
   }
-  button.avail-block.avail-block-public:hover{ border-color:var(--violet-deep); }
+  button.avail-block.avail-block-public:hover, button.avail-block.avail-block-public:focus-visible{
+    border-color:var(--violet);
+  }
+  .avail-block-public .avail-chip-title{ display:none; }
+  .avail-block-public:hover .avail-chip-title, .avail-block-public:focus-visible .avail-chip-title{
+    display:block; font-weight:700; margin-bottom:2px;
+  }
   .avail-timeline-empty{
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     font-size:.85rem; color:#8fd6a4; font-weight:600;
@@ -1198,9 +1212,11 @@
         if (s.public) block.type = 'button';
         block.style.top = top + '%';
         block.style.height = Math.max(height, 3) + '%';
-        block.textContent = s.public
-          ? ('✦ ' + (s.title || 'שיעור פתוח') + ' · ' + s.start + '–' + s.end)
-          : (s.start + '–' + s.end + ' ' + (s.noise === 'loud' ? '🔊' : '🤫'));
+        if (s.public){
+          block.innerHTML = '<span class="avail-chip-title">✦ ' + (s.title || 'שיעור פתוח') + '</span>' + s.start + '–' + s.end;
+        } else {
+          block.textContent = s.start + '–' + s.end + ' ' + (s.noise === 'loud' ? '🔊' : '🤫');
+        }
         if (s.public) block.addEventListener('click', function(){ openClassModal(day, studioLabel, s); });
         col.appendChild(block);
       });
