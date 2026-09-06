@@ -1,0 +1,87 @@
+<!doctype html>
+<title>Bona Calendar Sync</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#f4f1ec; --surface:#ffffff; --ink:#221c1a; --ink-soft:#5c534d;
+    --line:#e3ddd3; --accent:#2a4a5c; --accent-soft:#e7edf0;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#181513; --surface:#221d1a; --ink:#f2ede8; --ink-soft:#bdb2a8;
+      --line:#3a332c; --accent:#8fb6cc; --accent-soft:#25333b;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#181513; --surface:#221d1a; --ink:#f2ede8; --ink-soft:#bdb2a8;
+    --line:#3a332c; --accent:#8fb6cc; --accent-soft:#25333b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Heebo',system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:640px; margin:0 auto; padding:72px 24px 100px; }
+  header{ display:flex; align-items:center; gap:20px; margin-bottom:36px; }
+  header img{ width:64px; height:64px; border-radius:16px; flex-shrink:0; }
+  h1{ font-size:1.7rem; font-weight:700; margin:0; }
+  header p{ margin:6px 0 0; color:var(--ink-soft); font-size:.95rem; }
+  p, li{ line-height:1.7; color:var(--ink-soft); }
+  a{ color:var(--accent); }
+  section{ margin-top:36px; padding-top:36px; border-top:1px solid var(--line); }
+  section:first-of-type{ border-top:none; padding-top:0; }
+  h2{ font-size:1.1rem; font-weight:700; color:var(--ink); margin:0 0 12px; }
+  ul{ padding-inline-start:22px; margin:12px 0; }
+  li{ margin-bottom:8px; }
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:20px 22px; margin-top:14px;
+  }
+  .pill{
+    display:inline-block; background:var(--accent-soft); color:var(--accent);
+    font-size:.78rem; font-weight:600; padding:5px 12px; border-radius:999px; margin-bottom:16px;
+  }
+  .contact{ font-weight:600; color:var(--ink); }
+  footer{ margin-top:48px; font-size:.85rem; color:var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <header>
+    <img src="bona-sync-logo.png" alt="Bona Calendar Sync logo">
+    <div>
+      <h1>Bona Calendar Sync</h1>
+      <p>An internal calendar automation for Studio Bona (Tel Aviv)</p>
+    </div>
+  </header>
+
+  <section>
+    <span class="pill">What it does</span>
+    <p>Studio Bona is a dance and movement space in Tel Aviv. Staff manage bookings in a private Google Calendar. <strong>Bona Calendar Sync</strong> reads that calendar and writes a sanitized version — only which time slots are busy or free, and which room — to a separate public calendar, which powers the live availability widget on the studio's public website, <a href="https://studio-bona.com/">studio-bona.com</a>.</p>
+  </section>
+
+  <section>
+    <span class="pill">Data access</span>
+    <div class="card">
+      <ul>
+        <li>Read-only access to Studio Bona's own internal booking calendar (Google Calendar API, <code>calendar.readonly</code> scope).</li>
+        <li>Write access to a separate, purpose-built public calendar that the same business owns (<code>calendar</code> scope), used only to publish sanitized availability.</li>
+        <li>No other Google service is accessed — no Gmail, no Drive, no Contacts.</li>
+        <li>No data from studio visitors or website users is collected by this app.</li>
+      </ul>
+    </div>
+    <p>Full details: <a href="https://studio-bona.com/privacy.html">Privacy Policy</a>.</p>
+  </section>
+
+  <section>
+    <span class="pill">Who uses it</span>
+    <p>This is a single-business internal tool, connected only to Studio Bona's own Google account. It is not distributed, not installable by third parties, and has no other users.</p>
+  </section>
+
+  <section>
+    <span class="pill">Contact</span>
+    <p class="contact">bonaartstlv@gmail.com</p>
+  </section>
+
+  <footer>Studio Bona · שתולים 47, תל אביב · <a href="https://studio-bona.com/">studio-bona.com</a></footer>
+</div>
