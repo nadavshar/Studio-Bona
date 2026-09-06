@@ -287,7 +287,11 @@
      stylesheet). Without this, toggling .hidden in JS silently did
      nothing and both views rendered on top of each other. */
   .avail-week[hidden]{ display:none; }
-  .avail-wk-day{ border:1px solid var(--line); border-radius:14px; padding:10px 8px; background:var(--surface-soft); }
+  .avail-wk-day{
+    border:1px solid var(--line); border-radius:14px; padding:10px 8px; background:var(--surface-soft);
+    cursor:pointer; transition:border-color .15s ease, background .15s ease;
+  }
+  .avail-wk-day:hover, .avail-wk-day:focus-visible{ border-color:var(--violet); background:var(--surface); }
   .avail-wk-date{ text-align:center; font-size:.78rem; font-weight:700; margin-bottom:8px; }
   .avail-wk-date span{ display:block; font-weight:400; color:var(--ink-soft); font-size:.72rem; }
   .avail-wk-studio + .avail-wk-studio{ margin-top:8px; padding-top:8px; border-top:1px dashed var(--line); }
@@ -1121,7 +1125,7 @@
           pub.type = 'button';
           pub.className = 'avail-wk-chip avail-wk-chip-public';
           pub.innerHTML = '<span class="avail-chip-title">✦ ' + (s.title || 'שיעור פתוח') + '</span>' + s.start + '–' + s.end;
-          pub.addEventListener('click', function(){ openClassModal(day, studioLabel, s); });
+          pub.addEventListener('click', function(e){ e.stopPropagation(); openClassModal(day, studioLabel, s); });
           slotsWrap.appendChild(pub);
           return;
         }
@@ -1134,13 +1138,29 @@
       return wrap;
     }
 
+    function goToDay(idx){
+      dayIndex = idx;
+      mode = 'day';
+      modeDayBtn.setAttribute('aria-pressed', 'true');
+      modeWeekBtn.setAttribute('aria-pressed', 'false');
+      render();
+    }
+
     function renderWeek(){
       weekView.innerHTML = '';
       var slice = days.slice(weekStart, weekStart + WEEK_SIZE);
-      slice.forEach(function(day){
+      slice.forEach(function(day, i){
         var d = dateOf(day);
         var col = document.createElement('div');
         col.className = 'avail-wk-day';
+        col.setAttribute('role', 'button');
+        col.setAttribute('tabindex', '0');
+        col.setAttribute('aria-label', 'עברו לתצוגה היומית של ' + weekdayLong.format(d) + ', ' + dayFmt.format(d));
+        var dayGlobalIndex = weekStart + i;
+        col.addEventListener('click', function(){ goToDay(dayGlobalIndex); });
+        col.addEventListener('keydown', function(e){
+          if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); goToDay(dayGlobalIndex); }
+        });
 
         var dateEl = document.createElement('div');
         dateEl.className = 'avail-wk-date';
