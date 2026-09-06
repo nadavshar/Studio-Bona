@@ -1,0 +1,102 @@
+<!doctype html>
+<title>מדיניות פרטיות — Bona Calendar Sync</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Heebo:wght@300;400;500;600;700&display=swap">
+<style>
+  :root{
+    --cream:#faf8fc; --surface:#ffffff; --surface-soft:#f2edf8;
+    --ink:#241c2f; --ink-soft:#5b5267; --line:#e4dcec;
+    --violet:#7c4fae; --violet-deep:#5b3583;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --cream:#1a1420; --surface:#221a2a; --surface-soft:#2a2133;
+      --ink:#f2edf8; --ink-soft:#c3b8cf; --line:#3a2e46;
+      --violet:#b48ee0; --violet-deep:#d3b3f0;
+    }
+  }
+  :root[data-theme="dark"]{
+    --cream:#1a1420; --surface:#221a2a; --surface-soft:#2a2133;
+    --ink:#f2edf8; --ink-soft:#c3b8cf; --line:#3a2e46;
+    --violet:#b48ee0; --violet-deep:#d3b3f0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:'Heebo',system-ui,sans-serif; direction:rtl; text-align:right;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2{ font-family:'Playfair Display',Georgia,serif; font-weight:700; text-wrap:balance; margin:0; }
+  p, li{ line-height:1.75; color:var(--ink-soft); }
+  a{ color:var(--violet-deep); }
+  .wrap{ max-width:640px; margin:0 auto; padding:72px 24px 100px; }
+  header{ margin-bottom:48px; }
+  .eyebrow{
+    font-size:.72rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--violet); display:block; margin-bottom:14px;
+  }
+  h1{ font-size:clamp(1.7rem,4vw,2.3rem); margin-bottom:10px; }
+  header p{ margin-top:14px; }
+  .updated{ font-size:.85rem; color:var(--ink-soft); margin-top:18px; }
+  section{ margin-top:40px; padding-top:40px; border-top:1px solid var(--line); }
+  section:first-of-type{ border-top:none; padding-top:0; }
+  h2{ font-size:1.25rem; margin-bottom:14px; }
+  ul{ padding-inline-start:22px; margin:14px 0; }
+  li{ margin-bottom:8px; }
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:16px;
+    padding:22px 24px; margin-top:16px;
+  }
+  .contact{ font-weight:600; color:var(--ink); }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Studio Buena</span>
+    <h1>מדיניות פרטיות — Bona Calendar Sync</h1>
+    <p>כלי פנימי שמסנכרן זמינות בין יומן Google הפנימי של סטודיו בואנה ליומן ציבורי, כדי להציג באתר הסטודיו אילו חללים תפוסים — בלי לחשוף פרטי לקוחות.</p>
+    <div class="updated">עודכן לאחרונה: אוגוסט 2026</div>
+  </header>
+
+  <section>
+    <h2>למה הכלי הזה קיים</h2>
+    <p>סטודיו בואנה מנהל יומן פנימי לתיאום הזמנות. הכלי הזה קורא ממנו רק שני פרטים — אילו שעות תפוסות, ובאיזה חלל (סטודיו 1 או 2) — וכותב אותם ליומן ציבורי נפרד, כדי שמבקרים באתר יוכלו לראות זמינות בזמן אמת. שום שם לקוח, פרטי קשר או תוכן אירוע לא מועתקים או נשמרים בשום שלב.</p>
+  </section>
+
+  <section>
+    <h2>אילו נתונים נגישים לכלי</h2>
+    <div class="card">
+      <ul>
+        <li>קריאה בלבד מיומן Google הפנימי של הסטודיו (הרשאת <code>calendar.readonly</code>).</li>
+        <li>אין גישה לכלים אחרים של Google — לא Gmail, לא Drive, לא שום שירות נוסף.</li>
+        <li>אין איסוף מידע ממבקרים באתר או מלקוחות הסטודיו.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>שמירת מידע</h2>
+    <p>הכלי לא שומר עותק קבוע של אף נתון. בכל הרצה הוא קורא את השעות התפוסות מהיומן הפנימי, כותב אותן ליומן הציבורי, ומסיים - בלי מסד נתונים, קובץ לוג עם תוכן אישי, או כל אחסון אחר של המידע שנקרא.</p>
+  </section>
+
+  <section>
+    <h2>שיתוף מידע עם צד שלישי</h2>
+    <p>המידע לא משותף, נמכר או מועבר לאף גורם חיצוני. הזרימה היחידה היא בין שני יומני Google ששייכים לאותו עסק - היומן הפנימי והיומן הציבורי.</p>
+  </section>
+
+  <section>
+    <h2>ביטול הגישה</h2>
+    <p>בעל/ת חשבון ה-Google של הסטודיו יכולים לבטל את הגישה של הכלי בכל רגע דרך <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">הרשאות צד שלישי בחשבון Google</a>.</p>
+  </section>
+
+  <section>
+    <h2>מי משתמש בכלי</h2>
+    <p>הכלי מיועד לשימוש פנימי בלבד של צוות סטודיו בואנה, ומחובר לחשבון ה־Google של הסטודיו עצמו. הוא אינו אפליקציה ציבורית ואינו זמין להתקנה על ידי צד שלישי.</p>
+  </section>
+
+  <section>
+    <h2>שאלות ופנייה</h2>
+    <p>לכל שאלה בנוגע לכלי או לשימוש בנתונים:</p>
+    <p class="contact">bonaartstlv@gmail.com</p>
+  </section>
+</div>
