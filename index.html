@@ -603,7 +603,7 @@
         <button type="button" id="avail-next" aria-label="הבא">›</button>
       </div>
 
-      <div class="avail-studio-heads">
+      <div class="avail-studio-heads" id="avail-studio-heads">
         <span>סטודיו 1</span>
         <span>סטודיו 2</span>
       </div>
@@ -1038,6 +1038,7 @@
     var updatedEl = document.getElementById('avail-updated');
     var weekView = document.getElementById('avail-week-view');
     var dayView = document.getElementById('avail-day-view');
+    var studioHeads = document.getElementById('avail-studio-heads');
     var rangeLabel = document.getElementById('avail-range-label');
     var prevBtn = document.getElementById('avail-prev');
     var nextBtn = document.getElementById('avail-next');
@@ -1184,9 +1185,14 @@
     function render(){
       if (mode === 'week'){
         weekView.hidden = false; dayView.hidden = true;
+        // the "סטודיו 1 / סטודיו 2" column heads only line up with the day
+        // view's two side-by-side timelines — the week grid already labels
+        // each studio inside its own day column, so hide them here.
+        if (studioHeads) studioHeads.hidden = true;
         renderWeek();
       } else {
         weekView.hidden = true; dayView.hidden = false;
+        if (studioHeads) studioHeads.hidden = false;
         renderDay();
       }
     }
