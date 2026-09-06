@@ -19,26 +19,12 @@
     --shadow-sm: 0 12px 28px -16px rgba(50,20,45,.24);
     --overlay-rgb: 76,28,52;
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --cream:#1c1512;
-      --surface:#261c18;
-      --surface-soft:#302420;
-      --pale-blue:#1e323a;
-      --ink:#f5ece6;
-      --ink-soft:#cbb6ae;
-      --line:#4a372e;
-      --violet:#d987cc;
-      --violet-deep:#eaabde;
-      --mauve:#f0a868;
-      --mauve-soft:#3a2c22;
-      --shadow: 0 26px 60px -24px rgba(0,0,0,.6);
-      --shadow-sm: 0 12px 28px -16px rgba(0,0,0,.5);
-      --overlay-rgb: 48,16,36;
-    }
-  }
+  /* The studio's brand palette is one deliberate warm, light look — it no
+     longer auto-switches to a dark scheme from the visitor's OS setting.
+     :root[data-theme="dark"] is kept in case an explicit toggle is added
+     later, but nothing currently sets that attribute. */
   :root[data-theme="dark"]{
-    --cream:#1c1512;
+    --cream:#1e170f;
     --surface:#261c18;
     --surface-soft:#302420;
     --pale-blue:#1e323a;
@@ -301,7 +287,6 @@
   .avail-wk-slots{ display:flex; flex-direction:column; gap:3px; }
   .avail-wk-chip{ font-size:.68rem; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:2px 4px; text-align:center; }
   .avail-wk-free{ font-size:.7rem; color:#4b8a5e; text-align:center; font-weight:600; }
-  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .avail-wk-free{ color:#8fd6a4; } }
   :root[data-theme="dark"] .avail-wk-free{ color:#8fd6a4; }
 
   /* day view: two column timeline */
@@ -321,7 +306,6 @@
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     font-size:.85rem; color:#4b8a5e; font-weight:600;
   }
-  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .avail-timeline-empty{ color:#8fd6a4; } }
   :root[data-theme="dark"] .avail-timeline-empty{ color:#8fd6a4; }
 
   .avail-note{ margin-top:26px; font-size:.92rem; color:var(--ink-soft); max-width:60ch; }
