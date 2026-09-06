@@ -3,40 +3,23 @@
 <meta charset="utf-8" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
 <style>
+  /* One deliberate look — deep eggplant-wine — same for every visitor,
+     regardless of device theme. No prefers-color-scheme switching and no
+     [data-theme] variant: this *is* the brand palette. */
   :root{
-    --cream:#eee0c9;
-    --surface:#ffffff;
-    --surface-soft:#f6ece5;
-    --pale-blue:#dceef8;
-    --ink:#2a2027;
-    --ink-soft:#6c5c5a;
-    --line:#ecdcd0;
-    --violet:#9c4b92;
-    --violet-deep:#7a3a72;
-    --mauve:#e08a4f;
-    --mauve-soft:#fbe7d6;
-    --shadow: 0 26px 60px -28px rgba(50,20,45,.32);
-    --shadow-sm: 0 12px 28px -16px rgba(50,20,45,.24);
-    --overlay-rgb: 76,28,52;
-  }
-  /* The studio's brand palette is one deliberate warm, light look — it no
-     longer auto-switches to a dark scheme from the visitor's OS setting.
-     :root[data-theme="dark"] is kept in case an explicit toggle is added
-     later, but nothing currently sets that attribute. */
-  :root[data-theme="dark"]{
-    --cream:#1e170f;
-    --surface:#261c18;
-    --surface-soft:#302420;
-    --pale-blue:#1e323a;
-    --ink:#f5ece6;
-    --ink-soft:#cbb6ae;
-    --line:#4a372e;
-    --violet:#d987cc;
-    --violet-deep:#eaabde;
+    --cream:#301024;
+    --surface:#3f1830;
+    --surface-soft:#4d2039;
+    --pale-blue:#33223f;
+    --ink:#f6ece9;
+    --ink-soft:#d1a8c2;
+    --line:#5a2f4d;
+    --violet:#e08fd1;
+    --violet-deep:#f2b3e6;
     --mauve:#f0a868;
-    --mauve-soft:#3a2c22;
-    --shadow: 0 26px 60px -24px rgba(0,0,0,.6);
-    --shadow-sm: 0 12px 28px -16px rgba(0,0,0,.5);
+    --mauve-soft:#4a2c3c;
+    --shadow: 0 26px 60px -28px rgba(15,4,14,.55);
+    --shadow-sm: 0 12px 28px -16px rgba(15,4,14,.45);
     --overlay-rgb: 48,16,36;
   }
 
@@ -286,8 +269,7 @@
   .avail-wk-studio-label{ font-size:.68rem; color:var(--ink-soft); text-align:center; margin-bottom:4px; }
   .avail-wk-slots{ display:flex; flex-direction:column; gap:3px; }
   .avail-wk-chip{ font-size:.68rem; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:2px 4px; text-align:center; }
-  .avail-wk-free{ font-size:.7rem; color:#4b8a5e; text-align:center; font-weight:600; }
-  :root[data-theme="dark"] .avail-wk-free{ color:#8fd6a4; }
+  .avail-wk-free{ font-size:.7rem; color:#8fd6a4; text-align:center; font-weight:600; }
 
   /* day view: two column timeline */
   .avail-day-timeline{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -304,9 +286,8 @@
   }
   .avail-timeline-empty{
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font-size:.85rem; color:#4b8a5e; font-weight:600;
+    font-size:.85rem; color:#8fd6a4; font-weight:600;
   }
-  :root[data-theme="dark"] .avail-timeline-empty{ color:#8fd6a4; }
 
   .avail-note{ margin-top:26px; font-size:.92rem; color:var(--ink-soft); max-width:60ch; }
 
