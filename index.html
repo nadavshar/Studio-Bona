@@ -289,6 +289,15 @@
   .avail-wk-slots{ display:flex; flex-direction:column; gap:3px; }
   .avail-wk-chip{ font-size:.68rem; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:2px 4px; text-align:center; }
   .avail-wk-free{ font-size:.7rem; color:#8fd6a4; text-align:center; font-weight:600; }
+  /* public / open-to-all classes — a real button, styled to stand out
+     from the plain occupied/free chips so it reads as clickable */
+  .avail-wk-chip.avail-wk-chip-public{
+    display:block; width:100%; font:inherit; text-align:center; cursor:pointer;
+    background:var(--mauve-soft); border-color:var(--violet); color:var(--ink);
+    font-weight:600; transition:border-color .15s ease;
+  }
+  .avail-wk-chip.avail-wk-chip-public:hover{ border-color:var(--violet-deep); }
+  .avail-chip-title{ display:block; font-weight:700; font-size:.72rem; margin-bottom:1px; }
 
   /* day view: two column timeline */
   .avail-day-timeline{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -303,6 +312,11 @@
     position:absolute; left:8px; right:52px; border-radius:8px; padding:5px 8px; font-size:.72rem;
     background:var(--mauve-soft); border:1px solid var(--line); color:var(--ink); overflow:hidden;
   }
+  button.avail-block.avail-block-public{
+    font:inherit; text-align:right; cursor:pointer; border-color:var(--violet);
+    transition:border-color .15s ease;
+  }
+  button.avail-block.avail-block-public:hover{ border-color:var(--violet-deep); }
   .avail-timeline-empty{
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     font-size:.85rem; color:#8fd6a4; font-weight:600;
@@ -511,6 +525,20 @@
   </div>
 </div>
 
+<div class="studio-modal" id="class-modal">
+  <div class="studio-modal-panel">
+    <button id="cm-close" aria-label="סגירה">&times;</button>
+    <div class="studio-modal-head">
+      <span class="eyebrow" id="cm-eyebrow">שיעור פתוח לקהל</span>
+      <h3 id="cm-title">שם השיעור</h3>
+    </div>
+    <p id="cm-meta" style="color:var(--ink-soft);margin-bottom:22px;"></p>
+    <div class="studio-modal-video">
+      <a class="video-link" id="cm-signup-link" href="#" target="_blank" rel="noopener noreferrer">✦ הרשמה / פרטים בוואטסאפ ↗</a>
+    </div>
+  </div>
+</div>
+
 <section class="info-band" id="whats-here">
   <div class="wrap">
     <div class="section-head">
@@ -573,6 +601,7 @@
           <div class="avail-legend">
             <span>🤫 שקט</span>
             <span>🔊 רועש</span>
+            <span style="color:var(--violet-deep);font-weight:600;">✦ שיעור פתוח לקהל — לחיצה לפרטים</span>
           </div>
           <div class="channel-toggle avail-mode-toggle" role="group" aria-label="תצוגה">
             <button type="button" class="channel-btn" id="avail-mode-day" aria-pressed="true">יומי</button>
@@ -753,6 +782,14 @@
       "studio1": [
         {
           "start": "16:30",
+          "end": "18:00",
+          "noise": "quiet",
+          "public": true,
+          "title": "שיעור בלט למתחילות (דוגמה)",
+          "teacher": "שם המורה"
+        },
+        {
+          "start": "18:00",
           "end": "20:00",
           "noise": "quiet"
         },
@@ -776,7 +813,10 @@
         {
           "start": "20:00",
           "end": "21:30",
-          "noise": "quiet"
+          "noise": "quiet",
+          "public": true,
+          "title": "סדנת היפ הופ פתוחה (דוגמה)",
+          "teacher": "שם המורה"
         }
       ],
       "studio2": []
@@ -1054,7 +1094,7 @@
     var dayIndex = 0;   // index into days[] for day view
     var WEEK_SIZE = 7;
 
-    function weekChip(slots){
+    function weekChip(slots, day, studioLabel){
       var wrap = document.createElement('div');
       if (!slots || !slots.length){
         var free = document.createElement('div');
@@ -1066,6 +1106,15 @@
       var slotsWrap = document.createElement('div');
       slotsWrap.className = 'avail-wk-slots';
       slots.forEach(function(s){
+        if (s.public){
+          var pub = document.createElement('button');
+          pub.type = 'button';
+          pub.className = 'avail-wk-chip avail-wk-chip-public';
+          pub.innerHTML = '<span class="avail-chip-title">✦ ' + (s.title || 'שיעור פתוח') + '</span>' + s.start + '–' + s.end;
+          pub.addEventListener('click', function(){ openClassModal(day, studioLabel, s); });
+          slotsWrap.appendChild(pub);
+          return;
+        }
         var chip = document.createElement('div');
         chip.className = 'avail-wk-chip';
         chip.textContent = s.start + '–' + s.end + ' ' + (s.noise === 'loud' ? '🔊' : '🤫');
@@ -1095,7 +1144,7 @@
           label.className = 'avail-wk-studio-label';
           label.textContent = 'סטודיו ' + n;
           s.appendChild(label);
-          s.appendChild(weekChip(day['studio' + n]));
+          s.appendChild(weekChip(day['studio' + n], day, 'סטודיו ' + n));
           col.appendChild(s);
         });
         weekView.appendChild(col);
@@ -1112,7 +1161,7 @@
       var p = hhmm.split(':'); return (+p[0]) * 60 + (+p[1]);
     }
 
-    function timelineCol(slots){
+    function timelineCol(slots, day, studioLabel){
       var col = document.createElement('div');
       col.className = 'avail-timeline-col';
       var totalMin = (DAY_END_H - DAY_START_H) * 60;
@@ -1144,11 +1193,15 @@
         if (endMin <= startMin) return;
         var top = ((startMin - DAY_START_H * 60) / totalMin) * 100;
         var height = ((endMin - startMin) / totalMin) * 100;
-        var block = document.createElement('div');
-        block.className = 'avail-block';
+        var block = document.createElement(s.public ? 'button' : 'div');
+        block.className = s.public ? 'avail-block avail-block-public' : 'avail-block';
+        if (s.public) block.type = 'button';
         block.style.top = top + '%';
         block.style.height = Math.max(height, 3) + '%';
-        block.textContent = s.start + '–' + s.end + ' ' + (s.noise === 'loud' ? '🔊' : '🤫');
+        block.textContent = s.public
+          ? ('✦ ' + (s.title || 'שיעור פתוח') + ' · ' + s.start + '–' + s.end)
+          : (s.start + '–' + s.end + ' ' + (s.noise === 'loud' ? '🔊' : '🤫'));
+        if (s.public) block.addEventListener('click', function(){ openClassModal(day, studioLabel, s); });
         col.appendChild(block);
       });
       return col;
@@ -1157,13 +1210,41 @@
     function renderDay(){
       dayView.innerHTML = '';
       var day = days[dayIndex];
-      dayView.appendChild(timelineCol(day.studio1));
-      dayView.appendChild(timelineCol(day.studio2));
+      dayView.appendChild(timelineCol(day.studio1, day, 'סטודיו 1'));
+      dayView.appendChild(timelineCol(day.studio2, day, 'סטודיו 2'));
 
       var d = dateOf(day);
       rangeLabel.textContent = weekdayLong.format(d) + ', ' + dayFmt.format(d);
       prevBtn.disabled = dayIndex <= 0;
       nextBtn.disabled = dayIndex >= days.length - 1;
+    }
+
+    // Public / open-to-all classes — clicking a slot marked "public" in the
+    // availability data opens this modal with the class name, teacher and
+    // a WhatsApp link to sign up (a custom "signup" URL on the slot wins
+    // over the generated WhatsApp message, if one is ever added).
+    var cm = document.getElementById('class-modal');
+    var cmEyebrow = document.getElementById('cm-eyebrow');
+    var cmTitle = document.getElementById('cm-title');
+    var cmMeta = document.getElementById('cm-meta');
+    var cmSignupLink = document.getElementById('cm-signup-link');
+
+    function openClassModal(day, studioLabel, slot){
+      var d = dateOf(day);
+      cmEyebrow.textContent = studioLabel;
+      cmTitle.textContent = slot.title || 'שיעור פתוח לקהל';
+      var metaParts = [weekdayLong.format(d) + ', ' + dayFmt.format(d), slot.start + '–' + slot.end];
+      if (slot.teacher) metaParts.push('מורה: ' + slot.teacher);
+      cmMeta.textContent = metaParts.join(' · ');
+      var waText = 'שלום! אשמח לפרטים/הרשמה לשיעור "' + (slot.title || '') + '" ב' + studioLabel +
+        ' בתאריך ' + dayFmt.format(d) + ' בשעה ' + slot.start + '.';
+      cmSignupLink.href = slot.signup || ('https://wa.me/972533234304?text=' + encodeURIComponent(waText));
+      if (cm) cm.classList.add('open');
+    }
+    if (cm){
+      document.getElementById('cm-close').addEventListener('click', function(){ cm.classList.remove('open'); });
+      cm.addEventListener('click', function(e){ if (e.target === cm) cm.classList.remove('open'); });
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape') cm.classList.remove('open'); });
     }
 
     function render(){
