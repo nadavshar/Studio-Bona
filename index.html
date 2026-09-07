@@ -314,7 +314,11 @@
   @media (max-width:900px){ .info-grid{ grid-template-columns:repeat(2,1fr); } }
   @media (max-width:520px){ .info-grid{ grid-template-columns:1fr; } }
   .info-card{
-    background:var(--surface); border-radius:16px; padding:26px 24px;
+    /* Fixed to the site-wide dark-brown surface (not var(--surface), which
+       is locally overridden to wine inside #whats-here) — only these four
+       cards should look darker than the section around them; the icon
+       badge, icon color and text keep the local eggplant-wine tokens. */
+    background:#261c18; border-radius:16px; padding:26px 24px;
     box-shadow:var(--shadow-sm); transition:transform .25s ease, box-shadow .25s ease;
   }
   .info-card:has(a):hover{ transform:translateY(-4px); box-shadow:var(--shadow); }
