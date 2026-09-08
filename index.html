@@ -98,6 +98,8 @@
     --line:#4a372e;
     --violet:#d987cc;
     --violet-deep:#eaabde;
+    --violet-soft:rgba(217,135,204,.22);
+    --violet-soft-hover:rgba(217,135,204,.34);
     --mauve:#f0a868;
     --mauve-soft:#3a2c22;
     --shadow: 0 26px 60px -24px rgba(0,0,0,.6);
@@ -394,21 +396,19 @@
   .avail-wk-slots{ display:flex; flex-direction:column; gap:3px; }
   .avail-wk-chip{ font-size:.68rem; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:2px 4px; text-align:center; }
   .avail-wk-free{ font-size:.7rem; color:#8fd6a4; text-align:center; font-weight:600; }
-  /* public / open-to-all classes — a real button, but at rest it matches
-     the plain occupied chip exactly; only on hover/focus does it reveal
-     the class title and switch to the distinct violet styling */
+  /* public / open-to-all classes — stand out at rest with a violet-pink
+     tint and their title showing, so they read as an invitation rather
+     than blending into the regular occupied chips (also matters on touch
+     devices, which have no hover to reveal anything). */
   .avail-wk-chip.avail-wk-chip-public{
     display:block; width:100%; font:inherit; text-align:center; cursor:pointer;
-    color:var(--ink); transition:background .15s ease, border-color .15s ease;
+    color:var(--ink); background:var(--violet-soft); border-color:var(--violet);
+    font-weight:600; transition:background .15s ease, border-color .15s ease;
   }
   .avail-wk-chip.avail-wk-chip-public:hover, .avail-wk-chip.avail-wk-chip-public:focus-visible{
-    background:var(--mauve-soft); border-color:var(--violet); font-weight:600;
+    background:var(--violet-soft-hover); border-color:var(--violet-deep);
   }
-  .avail-chip-title{ display:none; }
-  .avail-wk-chip.avail-wk-chip-public:hover .avail-chip-title,
-  .avail-wk-chip.avail-wk-chip-public:focus-visible .avail-chip-title{
-    display:block; font-weight:700; font-size:.72rem; margin-bottom:1px;
-  }
+  .avail-chip-title{ display:block; font-weight:700; font-size:.72rem; margin-bottom:1px; color:var(--violet-deep); }
 
   /* day view: two column timeline */
   .avail-day-timeline{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -433,19 +433,18 @@
     position:absolute; left:8px; right:52px; border-radius:8px; padding:5px 8px; font-size:.72rem;
     background:var(--mauve-soft); border:1px solid var(--line); color:var(--ink); overflow:hidden;
   }
-  /* same idea as the week chip above: identical to a plain block at rest,
-     distinct only on hover/focus */
+  /* same idea as the week chip above: a violet-pink tint and visible
+     title at rest, so an open class reads as an invitation rather than
+     blending into the regular occupied blocks */
   button.avail-block.avail-block-public{
     font:inherit; text-align:right; cursor:pointer;
-    transition:border-color .15s ease;
+    background:var(--violet-soft); border-color:var(--violet);
+    transition:background .15s ease, border-color .15s ease;
   }
   button.avail-block.avail-block-public:hover, button.avail-block.avail-block-public:focus-visible{
-    border-color:var(--violet);
+    background:var(--violet-soft-hover); border-color:var(--violet-deep);
   }
-  .avail-block-public .avail-chip-title{ display:none; }
-  .avail-block-public:hover .avail-chip-title, .avail-block-public:focus-visible .avail-chip-title{
-    display:block; font-weight:700; margin-bottom:2px;
-  }
+  .avail-block-public .avail-chip-title{ display:block; font-weight:700; margin-bottom:2px; color:var(--violet-deep); }
   .avail-timeline-empty{
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     font-size:.85rem; color:#8fd6a4; font-weight:600;
