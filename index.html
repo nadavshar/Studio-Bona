@@ -358,6 +358,15 @@
   .avail-studio-heads{
     display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:10px; padding:0 2px;
   }
+  /* same [hidden]-vs-author-display gotcha as .avail-week/.avail-day-timeline
+     above: without this, hiding the shared heads row in week mode via JS
+     did nothing, leaving a leftover sliver. */
+  .avail-studio-heads[hidden]{ display:none; }
+  /* below 520px the day-view timeline drops to one stacked column (see
+     .avail-day-timeline media query), so this shared two-column header no
+     longer matches either view's layout — hide it and let each column
+     carry its own label instead (.avail-timeline-label below). */
+  @media (max-width:520px){ .avail-studio-heads{ display:none; } }
   .avail-studio-heads span{
     text-align:center; font-size:.8rem; font-weight:700; color:var(--violet-deep);
     text-transform:uppercase; letter-spacing:.04em;
@@ -405,6 +414,15 @@
   .avail-day-timeline{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   @media (max-width:520px){ .avail-day-timeline{ grid-template-columns:1fr; } }
   .avail-day-timeline[hidden]{ display:none; }
+  /* label carried inside each stacked column on mobile, replacing the
+     shared #avail-studio-heads row (hidden below 520px — see above) */
+  .avail-timeline-label{ display:none; }
+  @media (max-width:520px){
+    .avail-timeline-label{
+      display:block; text-align:center; font-size:.8rem; font-weight:700; color:var(--violet-deep);
+      text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;
+    }
+  }
   .avail-timeline-col{
     position:relative; border:1px solid var(--line); border-radius:16px; background:var(--surface-soft);
     height:560px; overflow:hidden;
@@ -526,6 +544,11 @@
   .foot-links{ display:flex; gap:22px; font-size:.88rem; color:var(--ink-soft); }
   .foot-links a{ text-decoration:none; }
   .foot-links a:hover{ color:var(--violet); }
+  /* space-between + wrap staggers the three items left/right/left on a
+     narrow screen instead of stacking cleanly — center-stack them instead */
+  @media (max-width:640px){
+    .foot-row{ flex-direction:column; justify-content:center; gap:18px; text-align:center; }
+  }
 
   @media (prefers-reduced-motion: reduce){
     *{ transition:none !important; scroll-behavior:auto !important; }
@@ -1306,8 +1329,15 @@
     }
 
     function timelineCol(slots, day, studioLabel){
+      var wrap = document.createElement('div');
+      var colLabel = document.createElement('div');
+      colLabel.className = 'avail-timeline-label';
+      colLabel.textContent = studioLabel;
+      wrap.appendChild(colLabel);
+
       var col = document.createElement('div');
       col.className = 'avail-timeline-col';
+      wrap.appendChild(col);
       var totalMin = (DAY_END_H - DAY_START_H) * 60;
 
       for (var h = DAY_START_H; h <= DAY_END_H; h++){
@@ -1328,7 +1358,7 @@
         empty.className = 'avail-timeline-empty';
         empty.textContent = 'פנוי כל היום';
         col.appendChild(empty);
-        return col;
+        return wrap;
       }
 
       slots.forEach(function(s){
@@ -1350,7 +1380,7 @@
         if (s.public) block.addEventListener('click', function(){ openClassModal(day, studioLabel, s); });
         col.appendChild(block);
       });
-      return col;
+      return wrap;
     }
 
     function renderDay(){
