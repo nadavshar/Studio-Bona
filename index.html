@@ -221,6 +221,10 @@
   @media (max-width:720px){ section{ padding:72px 0; } }
   .section-head{ max-width:640px; margin-bottom:56px; }
   .section-head h2{ font-size:clamp(2.1rem,3.8vw,3rem); font-weight:800; letter-spacing:-.01em; }
+  /* a smaller sub-heading in the same style as h2, for a secondary block
+     inside a section that already has its own big heading (e.g. "פרטים
+     שימושיים" under "מה יש במקום") */
+  .section-head h3{ font-size:clamp(1.3rem,2.4vw,1.7rem); font-weight:800; letter-spacing:-.01em; }
   .section-head p{ color:var(--ink-soft); font-size:1.08rem; margin-top:14px; max-width:56ch; }
 
   /* ---------- TWO SPACES ---------- */
@@ -689,8 +693,8 @@
       <div class="amenity"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg>חצר ירוקה</div>
     </div>
 
-    <div class="section-head" style="margin-top:88px;">
-      <span class="eyebrow">פרטים שימושיים</span>
+    <div class="section-head" style="margin-top:88px; margin-bottom:32px;">
+      <h3>פרטים שימושיים</h3>
     </div>
     <div class="info-grid">
       <div class="info-card">
@@ -741,8 +745,8 @@
             <span style="color:var(--violet-deep);font-weight:600;">✦ שיעור פתוח לקהל — לחיצה לפרטים</span>
           </div>
           <div class="channel-toggle avail-mode-toggle" role="group" aria-label="תצוגה">
-            <button type="button" class="channel-btn" id="avail-mode-day" aria-pressed="true">יומי</button>
-            <button type="button" class="channel-btn" id="avail-mode-week" aria-pressed="false">שבועי</button>
+            <button type="button" class="channel-btn" id="avail-mode-day" aria-pressed="false">יומי</button>
+            <button type="button" class="channel-btn" id="avail-mode-week" aria-pressed="true">שבועי</button>
           </div>
         </div>
       </div>
@@ -4653,7 +4657,7 @@
 
     function dateOf(day){ return new Date(day.date + 'T12:00:00+03:00'); }
 
-    var mode = 'day'; // 'week' | 'day' — daily view is the default; only one is ever shown
+    var mode = 'week'; // 'week' | 'day' — weekly view of the current week is the default; only one is ever shown
     var weekStart = 0;  // index into days[] for first visible week
     var dayIndex = 0;   // index into days[] for day view
     var WEEK_SIZE = 7;
