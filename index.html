@@ -252,18 +252,31 @@
   .tag{ font-size:.78rem; padding:6px 13px; border-radius:8px; background:var(--surface-soft); color:var(--ink-soft); }
 
   /* ---------- GALLERY ---------- */
-  .filmstrip{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
-  @media (max-width:820px){ .filmstrip{ grid-template-columns:repeat(2,1fr); } }
-  .frame{
-    position:relative; aspect-ratio:3/4; border-radius:16px; overflow:hidden; cursor:pointer;
-    box-shadow:var(--shadow-sm); transition:transform .3s ease, box-shadow .3s ease;
+  /* gallery: center card with side peeks — each card is one wing (may
+     hold several photos; the wing's photos live behind a single peek
+     card, chosen when its collage view exists) */
+  .peek-wrap{ display:flex; align-items:center; justify-content:center; gap:18px; }
+  .peek-arrow{
+    flex-shrink:0; width:48px; height:48px; border-radius:999px; border:1px solid var(--line);
+    background:var(--surface-soft); color:var(--ink); font-size:1.3rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:.15s;
   }
-  .frame:hover{ transform:translateY(-4px); box-shadow:var(--shadow); }
-  .frame img{ width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
-  .frame:hover img{ transform:scale(1.08); }
-  .frame-label{
-    position:absolute; inset:auto 0 0 0; padding:16px; color:#fff; font-size:.9rem; font-weight:600;
+  .peek-arrow:hover{ border-color:var(--violet); color:var(--violet-deep); }
+  .peek-stage{ display:flex; align-items:center; justify-content:center; height:440px; width:100%; max-width:760px; }
+  .peek-card{ position:relative; border:none; padding:0; cursor:pointer; border-radius:20px; overflow:hidden; flex-shrink:0; transition:all .3s ease; }
+  .peek-card img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .peek-card.side{ width:30%; height:80%; opacity:.45; filter:brightness(.5) saturate(.75); box-shadow:none; margin:0 -7%; z-index:1; }
+  .peek-card.side:hover{ opacity:.7; }
+  .peek-card.center{ width:50%; height:100%; z-index:3; box-shadow:var(--shadow); }
+  .peek-caption{
+    position:absolute; inset:auto 0 0 0; padding:16px; color:#fff; font-size:.88rem; font-weight:600; text-align:center;
     background:linear-gradient(0deg, rgba(var(--overlay-rgb),.78), transparent);
+  }
+  @media (max-width:640px){
+    .peek-stage{ height:340px; }
+    .peek-card.side{ width:12%; margin:0 -4%; }
+    .peek-card.center{ width:84%; }
+    .peek-arrow{ width:38px; height:38px; font-size:1.1rem; }
   }
 
   /* lightbox */
@@ -716,12 +729,10 @@
       <span class="eyebrow">הכירו את הסטודיו</span>
       <h2>הגלריה</h2>
     </div>
-    <div class="filmstrip">
-      <div class="frame" data-img="images/studio-1.jpg" data-title="סטודיו 1"><img src="images/studio-1.jpg" alt="סטודיו 1"><div class="frame-label">סטודיו 1</div></div>
-      <div class="frame" data-img="images/studio-2.jpg" data-title="סטודיו 2"><img src="images/studio-2.jpg" alt="סטודיו 2"><div class="frame-label">סטודיו 2</div></div>
-      <div class="frame" data-img="images/kitchen.jpg" data-title="סלון ומטבחון"><img src="images/kitchen.jpg" alt="סלון ומטבחון"><div class="frame-label">סלון ומטבחון</div></div>
-      <div class="frame" data-img="images/salon-live.jpg" data-title="ערב בסלון"><img src="images/salon-live.jpg" alt="ערב בסלון"><div class="frame-label">ערב בסלון</div></div>
-      <div class="frame" data-img="images/yard.jpg" data-title="חצר ירוקה"><img src="images/yard.jpg" alt="חצר ירוקה"><div class="frame-label">חצר ירוקה</div></div>
+    <div class="peek-wrap">
+      <button type="button" class="peek-arrow prev" id="peek-prev" aria-label="הקודם">›</button>
+      <div class="peek-stage" id="peek-stage"></div>
+      <button type="button" class="peek-arrow next" id="peek-next" aria-label="הבא">‹</button>
     </div>
   </div>
 </section>
@@ -4888,16 +4899,47 @@
   // Lightbox
   var lb = document.getElementById('lightbox');
   var lbImg = document.getElementById('lb-img');
-  document.querySelectorAll('.frame').forEach(function(f){
-    f.addEventListener('click', function(){
-      lbImg.src = f.getAttribute('data-img');
-      lbImg.alt = f.getAttribute('data-title') || '';
-      lb.classList.add('open');
-    });
-  });
+  function openLightbox(src, title){
+    lbImg.src = src;
+    lbImg.alt = title || '';
+    lb.classList.add('open');
+  }
   document.getElementById('lb-close').addEventListener('click', function(){ lb.classList.remove('open'); });
   lb.addEventListener('click', function(e){ if(e.target === lb) lb.classList.remove('open'); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ lb.classList.remove('open'); sm.classList.remove('open'); } });
+
+  // Gallery: center card with side peeks, one card per wing
+  (function(){
+    var WINGS = [
+      { label:'סטודיו 1', photos:['images/studio-1.jpg'] },
+      { label:'סטודיו 2', photos:['images/studio-2.jpg'] },
+      { label:'סלון ומטבחון', photos:['images/kitchen.jpg', 'images/salon-live.jpg'] },
+      { label:'חצר ירוקה', photos:['images/yard.jpg'] },
+    ];
+    var stage = document.getElementById('peek-stage');
+    if (!stage) return;
+    var idx = 0;
+    function render(){
+      var n = WINGS.length;
+      var prevW = WINGS[(idx - 1 + n) % n];
+      var curW = WINGS[idx];
+      var nextW = WINGS[(idx + 1) % n];
+      stage.innerHTML =
+        '<button type="button" class="peek-card side" id="peek-side-prev"><img src="' + prevW.photos[0] + '" alt=""></button>' +
+        '<button type="button" class="peek-card center" id="peek-center"><img src="' + curW.photos[0] + '" alt="' + curW.label + '">' +
+          '<div class="peek-caption">' + curW.label + '</div></button>' +
+        '<button type="button" class="peek-card side" id="peek-side-next"><img src="' + nextW.photos[0] + '" alt=""></button>';
+      document.getElementById('peek-side-prev').addEventListener('click', function(){ idx = (idx - 1 + n) % n; render(); });
+      document.getElementById('peek-side-next').addEventListener('click', function(){ idx = (idx + 1) % n; render(); });
+      // Temporary: opens the current single-image lightbox. Once the
+      // "all wings at once" collage view (prototyped separately) is
+      // approved, this click will open that instead.
+      document.getElementById('peek-center').addEventListener('click', function(){ openLightbox(curW.photos[0], curW.label); });
+    }
+    document.getElementById('peek-prev').addEventListener('click', function(){ idx = (idx - 1 + WINGS.length) % WINGS.length; render(); });
+    document.getElementById('peek-next').addEventListener('click', function(){ idx = (idx + 1) % WINGS.length; render(); });
+    render();
+  })();
 
   // Studio detail modal (photos + future videos, per studio)
   var studios = {
