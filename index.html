@@ -683,11 +683,11 @@
 <div class="mega-view" id="mega-view">
   <button class="mega-close" id="mega-close" aria-label="סגירה">&times;</button>
   <div class="mega-featured">
-    <button type="button" class="mega-nav mega-nav-prev" id="mega-prev" aria-label="הקודם">›</button>
+    <button type="button" class="mega-nav mega-nav-prev" id="mega-prev" aria-label="הקודם">‹</button>
     <div class="mega-featured-frame">
       <img id="mega-featured-img" src="" alt="">
     </div>
-    <button type="button" class="mega-nav mega-nav-next" id="mega-next" aria-label="הבא">‹</button>
+    <button type="button" class="mega-nav mega-nav-next" id="mega-next" aria-label="הבא">›</button>
   </div>
   <div class="mega-strip" id="mega-strip"></div>
 </div>
@@ -775,9 +775,9 @@
       <h2>הגלריה</h2>
     </div>
     <div class="peek-wrap">
-      <button type="button" class="peek-arrow prev" id="peek-prev" aria-label="הקודם">›</button>
+      <button type="button" class="peek-arrow prev" id="peek-prev" aria-label="הקודם">‹</button>
       <div class="peek-stage" id="peek-stage"></div>
-      <button type="button" class="peek-arrow next" id="peek-next" aria-label="הבא">‹</button>
+      <button type="button" class="peek-arrow next" id="peek-next" aria-label="הבא">›</button>
     </div>
   </div>
 </section>
@@ -4995,8 +4995,8 @@
     showMegaCurrent();
     megaView.classList.add('open');
   }
-  document.getElementById('mega-prev').addEventListener('click', function(){ megaIndex = (megaIndex + 1) % megaList.length; showMegaCurrent(); });
-  document.getElementById('mega-next').addEventListener('click', function(){ megaIndex = (megaIndex - 1 + megaList.length) % megaList.length; showMegaCurrent(); });
+  document.getElementById('mega-prev').addEventListener('click', function(){ megaIndex = (megaIndex - 1 + megaList.length) % megaList.length; showMegaCurrent(); });
+  document.getElementById('mega-next').addEventListener('click', function(){ megaIndex = (megaIndex + 1) % megaList.length; showMegaCurrent(); });
   document.getElementById('mega-close').addEventListener('click', function(){ megaView.classList.remove('open'); });
   megaView.addEventListener('click', function(e){ if (e.target === megaView) megaView.classList.remove('open'); });
   document.addEventListener('keydown', function(e){
@@ -5016,11 +5016,14 @@
     ];
     // every real photo across every wing, plus every event photo — this
     // is the full set the "all photos" viewer pages through
+    // interleaved on purpose (round-robin across wings) so the strip
+    // doesn't read as four back-to-back blocks by wing
     var ALL_GALLERY_PHOTOS = [
-      'images/studio-1.jpg', 'images/studio-2.jpg', 'images/kitchen.jpg', 'images/salon-live.jpg', 'images/yard.jpg',
-      'images/studio1-event.jpg', 'images/studio1-floor.jpg', 'images/studio1-floorwork.jpg', 'images/studio1-hands.jpg',
-      'images/studio2-from-chair.jpg', 'images/studio2-party.jpg', 'images/studio2-performance-1.jpg', 'images/studio2-performance-2.jpg',
-      'images/yard-event-1.jpg', 'images/yard-performance-1.jpg', 'images/yard-performance-2.jpg', 'images/yard-performance-3.jpg',
+      'images/studio-1.jpg', 'images/studio-2.jpg', 'images/kitchen.jpg', 'images/yard.jpg',
+      'images/studio1-event.jpg', 'images/studio2-from-chair.jpg', 'images/salon-live.jpg', 'images/yard-event-1.jpg',
+      'images/studio1-floor.jpg', 'images/studio2-party.jpg', 'images/yard-performance-1.jpg',
+      'images/studio1-floorwork.jpg', 'images/studio2-performance-1.jpg', 'images/yard-performance-2.jpg',
+      'images/studio1-hands.jpg', 'images/studio2-performance-2.jpg', 'images/yard-performance-3.jpg',
     ];
     var stage = document.getElementById('peek-stage');
     if (!stage) return;
@@ -5041,10 +5044,10 @@
         openMegaGallery(ALL_GALLERY_PHOTOS.map(function(src){ return { type:'photo', src:src }; }), curW.photos[0]);
       });
     }
-    // ›  at the right (RTL start) advances forward, ‹ at the left goes back —
-    // matches the universal chevron convention regardless of page direction
-    document.getElementById('peek-prev').addEventListener('click', function(){ idx = (idx + 1) % WINGS.length; render(); });
-    document.getElementById('peek-next').addEventListener('click', function(){ idx = (idx - 1 + WINGS.length) % WINGS.length; render(); });
+    // ‹ on the right = back, › on the left = forward — same convention
+    // already used by the availability calendar's prev/next buttons
+    document.getElementById('peek-prev').addEventListener('click', function(){ idx = (idx - 1 + WINGS.length) % WINGS.length; render(); });
+    document.getElementById('peek-next').addEventListener('click', function(){ idx = (idx + 1) % WINGS.length; render(); });
     render();
   })();
 
