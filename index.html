@@ -171,17 +171,6 @@
   .hero img{
     position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   }
-  .hero-video{
-    position:absolute; inset:0; overflow:hidden;
-    opacity:0; transition:opacity .8s ease; pointer-events:none;
-  }
-  .hero-video.is-ready{ opacity:1; }
-  .hero-video iframe{
-    position:absolute; top:50%; left:50%; border:0;
-    width:177.78vh; height:56.25vw;
-    min-width:100%; min-height:100%;
-    transform:translate(-50%,-50%);
-  }
   .hero::after{
     content:""; position:absolute; inset:0;
     background:linear-gradient(180deg, rgba(var(--overlay-rgb),.18) 0%, rgba(var(--overlay-rgb),.52) 65%, rgba(var(--overlay-rgb),.9) 100%);
@@ -418,11 +407,6 @@
      above: without this, hiding the shared heads row in week mode via JS
      did nothing, leaving a leftover sliver. */
   .avail-studio-heads[hidden]{ display:none; }
-  /* below 520px the day-view timeline drops to one stacked column (see
-     .avail-day-timeline media query), so this shared two-column header no
-     longer matches either view's layout — hide it and let each column
-     carry its own label instead (.avail-timeline-label below). */
-  @media (max-width:520px){ .avail-studio-heads{ display:none; } }
   .avail-studio-heads span{
     text-align:center; font-size:.8rem; font-weight:700; color:var(--violet-deep);
     text-transform:uppercase; letter-spacing:.04em;
@@ -464,18 +448,17 @@
   }
   .avail-chip-title{ display:block; font-weight:700; font-size:.72rem; margin-bottom:1px; color:var(--violet-deep); }
 
-  /* day view: two column timeline */
-  .avail-day-timeline{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  @media (max-width:520px){ .avail-day-timeline{ grid-template-columns:1fr; } }
+  /* day view: two column timeline — always side by side, phones included,
+     so the two studios stay comparable at a glance instead of stacking. */
+  .avail-day-timeline{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
   .avail-day-timeline[hidden]{ display:none; }
-  /* label carried inside each stacked column on mobile, replacing the
-     shared #avail-studio-heads row (hidden below 520px — see above) */
+  /* the shared #avail-studio-heads row above the timeline carries the
+     "סטודיו 1 / סטודיו 2" labels, so each column doesn't need its own. */
   .avail-timeline-label{ display:none; }
   @media (max-width:520px){
-    .avail-timeline-label{
-      display:block; text-align:center; font-size:.8rem; font-weight:700; color:var(--violet-deep);
-      text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;
-    }
+    .avail-day-timeline{ gap:6px; }
+    .avail-block{ right:38px; padding:4px 6px; font-size:.66rem; }
+    .avail-hour-label{ font-size:.6rem; right:4px; }
   }
   .avail-timeline-col{
     position:relative; border:1px solid var(--line); border-radius:16px; background:var(--surface-soft);
@@ -629,13 +612,6 @@
 
 <section class="hero">
   <img src="images/hero.jpg" alt="חלל ריקוד בסטודיו בואנה, תל אביב">
-  <div class="hero-video" id="hero-video" aria-hidden="true">
-    <iframe
-      src="https://www.youtube-nocookie.com/embed/o-HctXuNRq8?autoplay=1&mute=1&loop=1&playlist=o-HctXuNRq8&controls=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1"
-      title="" tabindex="-1"
-      allow="autoplay; encrypted-media"
-      onload="document.getElementById('hero-video').classList.add('is-ready')"></iframe>
-  </div>
   <div class="hero-inner wrap">
     <span class="eyebrow" style="color:#dcc3ec">שתולים 47, תל אביב</span>
     <h1>מרחב <em>להשכרה</em><br>בדרום תל אביב</h1>
@@ -652,23 +628,23 @@
     <div class="section-head">
       <span class="eyebrow">סטודיו בואנה</span>
       <h2>מתחם אחד, שני חללים</h2>
-      <p>שני סטודיו נפרדים תחת אותה קורת גג, וסביבם חצר, סלון ומטבחון משותפים — אפשר לשריין סטודיו אחד, את שניהם יחד, או את המתחם כולו לאירוע מיוחד.</p>
+      <p>שני חללי סטודיו נפרדים תחת אותה קורת גג, לצד חצר, סלון ומטבחון משותפים — אפשר לשריין סטודיו אחד, את שניהם יחד, או את המתחם כולו לאירוע מיוחד.</p>
     </div>
     <div class="spaces">
       <div class="space-card" data-studio-open="1" role="button" tabindex="0">
         <div class="ph"><img src="images/studio-1.jpg" alt="פעילות ריקוד בסטודיו 1"><span class="ph-more">עוד תמונות וסרטונים</span></div>
         <div class="space-body">
           <h3>סטודיו 1</h3>
-          <p>חלל ריקוד מרווח עם רצפת לינוליאום מקצועית, מראות בגובה הקיר ובר. מתאים לשיעורים קבועים, חזרות וקבוצות קטנות עד בינוניות.</p>
-          <div class="space-tags"><span class="tag">רצפת לינוליאום</span><span class="tag">מראות</span><span class="tag">בר</span></div>
+          <p>חלל גדול וגמיש לסדנאות, קבוצות גדולות ואירועים, עם רצפת לינוליאום, מראות וילונות ובר. תאורה מתכווננת ומערכת סאונד איכותית לכל סוגי הפעילות.</p>
+          <div class="space-tags"><span class="tag">מראות</span><span class="tag">וילונות</span><span class="tag">מערכת סאונד</span></div>
         </div>
       </div>
       <div class="space-card" data-studio-open="2" role="button" tabindex="0">
         <div class="ph"><img src="images/studio-2.jpg" alt="סטודיו 2 - חלל גדול עם מראות ווילונות"><span class="ph-more">עוד תמונות וסרטונים</span></div>
         <div class="space-body">
           <h3>סטודיו 2</h3>
-          <p>חלל גדול וגמיש לסדנאות, קבוצות גדולות ואירועים, עם רצפת לינוליאום, מראות ווילונות. תאורה מתכווננת ומערכת סאונד איכותית לכל סוגי הפעילות.</p>
-          <div class="space-tags"><span class="tag">מראות</span><span class="tag">וילונות</span><span class="tag">גמיש</span></div>
+          <p>חלל ריקוד מרווח עם רצפת לינוליאום מקצועית, מראות בגובה הקיר ווילונות. מתאים לשיעורים קבועים, חזרות וקבוצות קטנות עד בינוניות.</p>
+          <div class="space-tags"><span class="tag">מראות</span><span class="tag">וילונות</span><span class="tag">מערכת סאונד</span></div>
         </div>
       </div>
     </div>
@@ -787,7 +763,7 @@
     <div class="section-head">
       <span class="eyebrow">זמינות</span>
       <h2>זמינות הסטודיו</h2>
-      <p>רוצות.ים לדעת מתי פנוי? מוזמנות.ים לבדוק כאן את התאריך שמתאים לכן.ם, ולראות מה קורה בכל אחד מהסטודיואים - אם הוא פנוי או תפוס, ואם הפעילות רועשת או שקטה (יש זליגת סאונד בין הסטודיואים).</p>
+      <p>רוצות.ים לדעת מתי פנוי? מוזמנות.ים לבדוק כאן את התאריך שמתאים לכן.ם, ולראות מה קורה בכל אחד מהסטודיואים - אם הוא פנוי או תפוס, ואם הפעילות <strong>בסטודיו המקביל</strong> רועשת או שקטה (יש זליגת סאונד בין הסטודיואים).</p>
     </div>
     <div class="avail-panel">
       <div class="avail-top">
@@ -837,24 +813,24 @@
 
     <div class="events-video-grid">
       <div class="event-video-card">
-        <div class="event-video-frame"><video controls preload="none" poster="videos/posters/party-ad-poster.jpg"><source src="videos/party-ad.mp4" type="video/mp4"></video></div>
-        <div class="event-video-title">היכרות עם המתחם</div>
+        <div class="event-video-frame"><video controls playsinline preload="none" poster="videos/posters/party-ad-poster.jpg"><source src="videos/party-ad.mp4" type="video/mp4"></video></div>
+        <div class="event-video-title">חוגגים בסטודיו</div>
       </div>
       <div class="event-video-card">
-        <div class="event-video-frame"><video controls preload="none" poster="videos/posters/studio-clip-poster.jpg"><source src="videos/studio-clip.mp4" type="video/mp4"></video></div>
+        <div class="event-video-frame"><video controls playsinline preload="none" poster="videos/posters/studio-clip-poster.jpg"><source src="videos/studio-clip.mp4" type="video/mp4"></video></div>
         <div class="event-video-title">ערב חברתי בסטודיו</div>
       </div>
       <div class="event-video-card">
-        <div class="event-video-frame"><video controls preload="none" poster="videos/posters/bona-noam-poster.jpg"><source src="videos/bona-noam.mp4" type="video/mp4"></video></div>
-        <div class="event-video-title">מסיבה בחצר</div>
-      </div>
-      <div class="event-video-card">
-        <div class="event-video-frame"><video controls preload="none" poster="videos/posters/bona-birthday-poster.jpg"><source src="videos/bona-birthday.mp4" type="video/mp4"></video></div>
+        <div class="event-video-frame"><video controls playsinline preload="none" poster="videos/posters/bona-birthday-poster.jpg"><source src="videos/bona-birthday.mp4" type="video/mp4"></video></div>
         <div class="event-video-title">יום הולדת ילדים</div>
       </div>
       <div class="event-video-card">
-        <div class="event-video-frame"><video controls preload="none" poster="videos/posters/irit-birthday-poster.jpg"><source src="videos/irit-birthday.mp4" type="video/mp4"></video></div>
+        <div class="event-video-frame"><video controls playsinline preload="none" poster="videos/posters/irit-birthday-poster.jpg"><source src="videos/irit-birthday.mp4" type="video/mp4"></video></div>
         <div class="event-video-title">יום הולדת בחצר</div>
+      </div>
+      <div class="event-video-card">
+        <div class="event-video-frame"><video controls playsinline preload="none" poster="videos/posters/bona-noam-poster.jpg"><source src="videos/bona-noam.mp4" type="video/mp4"></video></div>
+        <div class="event-video-title">היכרות עם המתחם</div>
       </div>
     </div>
 
@@ -1019,7 +995,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -1046,14 +1022,14 @@
           "end": "10:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "10:00",
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
@@ -1130,14 +1106,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -1176,7 +1152,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -1197,7 +1173,7 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
@@ -1252,14 +1228,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -1298,7 +1274,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -1319,7 +1295,7 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
@@ -1396,14 +1372,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -1442,7 +1418,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -1463,7 +1439,7 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
@@ -1536,14 +1512,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -1590,7 +1566,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -1611,7 +1587,7 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
@@ -1689,14 +1665,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -1743,7 +1719,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -1764,7 +1740,7 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
@@ -1842,14 +1818,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -1896,7 +1872,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -1917,7 +1893,7 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
@@ -1996,14 +1972,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -2056,7 +2032,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -2077,7 +2053,7 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
@@ -2156,14 +2132,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -2210,7 +2186,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -2297,14 +2273,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -2351,7 +2327,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -2443,14 +2419,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -2497,7 +2473,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -2589,14 +2565,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -2643,7 +2619,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -2735,14 +2711,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -2789,7 +2765,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -2865,14 +2841,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -2919,7 +2895,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -3006,14 +2982,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -3060,7 +3036,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -3147,14 +3123,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -3201,7 +3177,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -3288,14 +3264,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -3342,7 +3318,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -3429,14 +3405,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -3483,7 +3459,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -3570,14 +3546,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -3624,7 +3600,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -3711,14 +3687,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -3765,7 +3741,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -3857,14 +3833,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -3911,7 +3887,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -4003,14 +3979,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -4057,7 +4033,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -4150,14 +4126,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -4204,7 +4180,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -4297,14 +4273,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -4351,7 +4327,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -4444,14 +4420,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -4498,7 +4474,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -4591,14 +4567,14 @@
           "end": "11:00",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "11:00",
           "end": "12:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "17:00",
@@ -4645,7 +4621,7 @@
           "end": "20:30",
           "public": true,
           "title": "Faya.Fam",
-          "signup": "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false"
+          "signup": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false"
         },
         {
           "start": "20:30",
@@ -4726,9 +4702,24 @@
     function dateOf(day){ return new Date(day.date + 'T12:00:00+03:00'); }
 
     var mode = 'week'; // 'week' | 'day' — weekly view of the current week is the default; only one is ever shown
-    var weekStart = 0;  // index into days[] for first visible week
     var dayIndex = 0;   // index into days[] for day view
-    var WEEK_SIZE = 7;
+
+    // Weeks always line up with the real Sunday–Saturday calendar week, not
+    // a rolling 7-day window from whatever day "today" happens to be. Since
+    // days[] only ever starts at today (no data before it), the very first
+    // week shown is a short partial week (today through the coming Saturday);
+    // every week after that is a full Sunday–Saturday span.
+    function weekStartFor(idx){
+      idx = Math.max(0, Math.min(days.length - 1, idx));
+      var dow = dateOf(days[idx]).getDay(); // 0 = Sunday .. 6 = Saturday
+      return Math.max(0, idx - dow);
+    }
+    function weekLengthFrom(startIdx){
+      var dow = dateOf(days[startIdx]).getDay();
+      var untilSaturday = 6 - dow;
+      return Math.min(untilSaturday + 1, days.length - startIdx);
+    }
+    var weekStart = weekStartFor(0);  // index into days[] for first visible week
 
     function weekChip(slots, day, studioLabel){
       var wrap = document.createElement('div');
@@ -4770,7 +4761,7 @@
 
     function renderWeek(){
       weekView.innerHTML = '';
-      var slice = days.slice(weekStart, weekStart + WEEK_SIZE);
+      var slice = days.slice(weekStart, weekStart + weekLengthFrom(weekStart));
       slice.forEach(function(day, i){
         var d = dateOf(day);
         var col = document.createElement('div');
@@ -4805,7 +4796,7 @@
       var first = dateOf(slice[0]), last = dateOf(slice[slice.length - 1]);
       rangeLabel.textContent = dayFmt.format(first) + ' – ' + dayFmt.format(last);
       prevBtn.disabled = weekStart <= 0;
-      nextBtn.disabled = weekStart + WEEK_SIZE >= days.length;
+      nextBtn.disabled = weekStart + slice.length >= days.length;
     }
 
     var DAY_START_H = 8, DAY_END_H = 23; // timeline window
@@ -4926,7 +4917,7 @@
     modeWeekBtn.addEventListener('click', function(){
       if (mode === 'week') return;
       mode = 'week';
-      weekStart = Math.max(0, Math.min(days.length - 1, dayIndex) - (dayIndex % WEEK_SIZE));
+      weekStart = weekStartFor(dayIndex);
       modeWeekBtn.setAttribute('aria-pressed', 'true');
       modeDayBtn.setAttribute('aria-pressed', 'false');
       render();
@@ -4940,18 +4931,26 @@
       render();
     });
     prevBtn.addEventListener('click', function(){
-      if (mode === 'week') weekStart = Math.max(0, weekStart - WEEK_SIZE);
+      if (mode === 'week') weekStart = weekStart <= 0 ? 0 : weekStartFor(weekStart - 1);
       else dayIndex = Math.max(0, dayIndex - 1);
       render();
     });
     nextBtn.addEventListener('click', function(){
-      if (mode === 'week') weekStart = Math.min(days.length - WEEK_SIZE, weekStart + WEEK_SIZE);
+      if (mode === 'week') weekStart = Math.min(days.length - 1, weekStart + weekLengthFrom(weekStart));
       else dayIndex = Math.min(days.length - 1, dayIndex + 1);
       render();
     });
 
     render();
   })();
+  // Event videos: clicking anywhere on the frame (not just the tiny native
+  // play button) starts playback with sound — the click itself is the user
+  // gesture, so the browser never blocks the audio.
+  document.querySelectorAll('.event-video-frame video').forEach(function(video){
+    video.addEventListener('click', function(){
+      if (video.paused) video.play();
+    });
+  });
   // Lightbox
   var lb = document.getElementById('lightbox');
   var lbImg = document.getElementById('lb-img');
