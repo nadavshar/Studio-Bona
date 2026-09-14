@@ -171,6 +171,17 @@
   .hero img{
     position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   }
+  .hero-video{
+    position:absolute; inset:0; overflow:hidden;
+    opacity:0; transition:opacity .8s ease; pointer-events:none;
+  }
+  .hero-video.is-ready{ opacity:1; }
+  .hero-video iframe{
+    position:absolute; top:50%; left:50%; border:0;
+    width:177.78vh; height:56.25vw;
+    min-width:100%; min-height:100%;
+    transform:translate(-50%,-50%);
+  }
   .hero::after{
     content:""; position:absolute; inset:0;
     background:linear-gradient(180deg, rgba(var(--overlay-rgb),.18) 0%, rgba(var(--overlay-rgb),.52) 65%, rgba(var(--overlay-rgb),.9) 100%);
@@ -612,6 +623,13 @@
 
 <section class="hero">
   <img src="images/hero.jpg" alt="חלל ריקוד בסטודיו בואנה, תל אביב">
+  <div class="hero-video" id="hero-video" aria-hidden="true">
+    <iframe
+      id="hero-video-frame"
+      src="https://www.youtube-nocookie.com/embed/o-HctXuNRq8?autoplay=1&mute=1&loop=1&playlist=o-HctXuNRq8&controls=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1"
+      title="" tabindex="-1"
+      allow="autoplay; encrypted-media"></iframe>
+  </div>
   <div class="hero-inner wrap">
     <span class="eyebrow" style="color:#dcc3ec">שתולים 47, תל אביב</span>
     <h1>מרחב <em>להשכרה</em><br>בדרום תל אביב</h1>
@@ -1243,6 +1261,41 @@
       if (video.paused) video.play();
     });
   });
+  // Hero background video: only fade the YouTube embed in over the still
+  // photo once we get real confirmation it's actually playing (a genuine
+  // onStateChange/"playing" postMessage from the player) - not just when the
+  // iframe's own document finishes loading, which fires long before the
+  // video itself starts and previously left a frozen/blank frame visible
+  // whenever the embed was slow or failed to play. If we never get that
+  // confirmation within a few seconds, we just leave the still photo up.
+  (function(){
+    var frame = document.getElementById('hero-video-frame');
+    var wrap = document.getElementById('hero-video');
+    if (!frame || !wrap) return;
+    var revealed = false;
+    function reveal(){
+      if (revealed) return;
+      revealed = true;
+      wrap.classList.add('is-ready');
+    }
+    function ping(){
+      try { frame.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'hero' }), '*'); }
+      catch (e) {}
+    }
+    function onMessage(e){
+      if (e.source !== frame.contentWindow) return;
+      var data;
+      try { data = JSON.parse(e.data); } catch (err) { return; }
+      if (data && data.event === 'onStateChange' && data.info === 1) reveal();
+    }
+    window.addEventListener('message', onMessage);
+    frame.addEventListener('load', function(){
+      ping();
+      setTimeout(ping, 500);
+      setTimeout(ping, 1500);
+    });
+    setTimeout(function(){ window.removeEventListener('message', onMessage); }, 8000);
+  })();
   // Lightbox
   var lb = document.getElementById('lightbox');
   var lbImg = document.getElementById('lb-img');
