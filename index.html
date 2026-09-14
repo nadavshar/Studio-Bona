@@ -263,15 +263,25 @@
   }
   .peek-arrow:hover{ border-color:var(--violet); color:var(--violet-deep); }
   .peek-stage{ display:flex; align-items:center; justify-content:center; height:440px; width:100%; max-width:760px; }
-  .peek-card{ position:relative; border:none; padding:0; cursor:pointer; border-radius:20px; overflow:hidden; flex-shrink:0; transition:all .3s ease; }
-  .peek-card img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .peek-card{ position:relative; border:none; padding:0; cursor:pointer; border-radius:20px; overflow:hidden; flex-shrink:0; transition:width .3s ease, height .3s ease, opacity .3s ease, filter .3s ease, box-shadow .3s ease; }
+  .peek-card img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:opacity .35s ease, transform .35s ease;
+  }
   .peek-card.side{ width:30%; height:80%; opacity:.45; filter:brightness(.5) saturate(.75); box-shadow:none; margin:0 -7%; z-index:1; }
   .peek-card.side:hover{ opacity:.7; }
   .peek-card.center{ width:50%; height:100%; z-index:3; box-shadow:var(--shadow); }
-  .peek-caption{
-    position:absolute; inset:auto 0 0 0; padding:16px; color:#fff; font-size:.88rem; font-weight:600; text-align:center;
-    background:linear-gradient(0deg, rgba(var(--overlay-rgb),.78), transparent);
-  }
+  /* crossfade+slide between photos on prev/next instead of an instant swap:
+     JS adds "peek-anim-out" right before swapping each <img>'s src (fading
+     the old photo out and nudging it toward the direction of travel), then
+     swaps to "peek-anim-in" with the new src already in place (starting
+     from the opposite offset) and removes it a frame later so the browser
+     animates back to rest - a standard two-phase crossfade since the same
+     <img> elements are reused rather than rebuilt every time. */
+  #peek-stage.peek-anim-out.dir-next img{ opacity:0; transform:translateX(-24px); }
+  #peek-stage.peek-anim-out.dir-prev img{ opacity:0; transform:translateX(24px); }
+  #peek-stage.peek-anim-in.dir-next img{ opacity:0; transform:translateX(24px); }
+  #peek-stage.peek-anim-in.dir-prev img{ opacity:0; transform:translateX(-24px); }
   @media (max-width:640px){
     .peek-stage{ height:340px; }
     .peek-card.side{ width:12%; margin:0 -4%; }
@@ -624,11 +634,7 @@
 <section class="hero">
   <img src="images/hero.jpg" alt="חלל ריקוד בסטודיו בואנה, תל אביב">
   <div class="hero-video" id="hero-video" aria-hidden="true">
-    <iframe
-      id="hero-video-frame"
-      src="https://www.youtube-nocookie.com/embed/o-HctXuNRq8?autoplay=1&mute=1&loop=1&playlist=o-HctXuNRq8&controls=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1"
-      title="" tabindex="-1"
-      allow="autoplay; encrypted-media"></iframe>
+    <div id="hero-video-frame"></div>
   </div>
   <div class="hero-inner wrap">
     <span class="eyebrow" style="color:#dcc3ec">שתולים 47, תל אביב</span>
@@ -770,7 +776,11 @@
     </div>
     <div class="peek-wrap">
       <button type="button" class="peek-arrow prev" id="peek-prev" aria-label="הקודם">‹</button>
-      <div class="peek-stage" id="peek-stage"></div>
+      <div class="peek-stage" id="peek-stage">
+        <button type="button" class="peek-card side" id="peek-side-prev"><img alt="" src=""></button>
+        <button type="button" class="peek-card center" id="peek-center"><img alt="תמונה מהסטודיו" src=""></button>
+        <button type="button" class="peek-card side" id="peek-side-next"><img alt="" src=""></button>
+      </div>
       <button type="button" class="peek-arrow next" id="peek-next" aria-label="הבא">›</button>
     </div>
   </div>
@@ -1261,40 +1271,42 @@
       if (video.paused) video.play();
     });
   });
-  // Hero background video: only fade the YouTube embed in over the still
-  // photo once we get real confirmation it's actually playing (a genuine
-  // onStateChange/"playing" postMessage from the player) - not just when the
-  // iframe's own document finishes loading, which fires long before the
-  // video itself starts and previously left a frozen/blank frame visible
-  // whenever the embed was slow or failed to play. If we never get that
-  // confirmation within a few seconds, we just leave the still photo up.
+  // Hero background video: built with YouTube's own IFrame Player API
+  // (rather than hand-parsing postMessage events, which turned out to be
+  // too fragile to reliably detect real playback) so we only fade the
+  // video in over the still photo on a genuine onStateChange -> PLAYING
+  // callback. If the API script is blocked or playback never actually
+  // starts, reveal() simply never runs and the still photo stays up -
+  // never a frozen or blank frame.
   (function(){
-    var frame = document.getElementById('hero-video-frame');
     var wrap = document.getElementById('hero-video');
-    if (!frame || !wrap) return;
+    var target = document.getElementById('hero-video-frame');
+    if (!wrap || !target) return;
     var revealed = false;
     function reveal(){
       if (revealed) return;
       revealed = true;
       wrap.classList.add('is-ready');
     }
-    function ping(){
-      try { frame.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'hero' }), '*'); }
-      catch (e) {}
-    }
-    function onMessage(e){
-      if (e.source !== frame.contentWindow) return;
-      var data;
-      try { data = JSON.parse(e.data); } catch (err) { return; }
-      if (data && data.event === 'onStateChange' && data.info === 1) reveal();
-    }
-    window.addEventListener('message', onMessage);
-    frame.addEventListener('load', function(){
-      ping();
-      setTimeout(ping, 500);
-      setTimeout(ping, 1500);
-    });
-    setTimeout(function(){ window.removeEventListener('message', onMessage); }, 8000);
+    window.onYouTubeIframeAPIReady = function(){
+      new YT.Player(target, {
+        host: 'https://www.youtube-nocookie.com',
+        videoId: 'o-HctXuNRq8',
+        playerVars: {
+          autoplay: 1, mute: 1, loop: 1, playlist: 'o-HctXuNRq8',
+          controls: 0, modestbranding: 1, playsinline: 1, rel: 0,
+          iv_load_policy: 3, disablekb: 1
+        },
+        events: {
+          onStateChange: function(e){
+            if (e.data === YT.PlayerState.PLAYING) reveal();
+          }
+        }
+      });
+    };
+    var api = document.createElement('script');
+    api.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(api);
   })();
   // Lightbox
   var lb = document.getElementById('lightbox');
@@ -1350,18 +1362,12 @@
     if (e.key === 'ArrowLeft') document.getElementById('mega-next').click();
   });
 
-  // Gallery: center card with side peeks, one card per wing
+  // Gallery: center card with side peeks, cycling through every real photo
+  // (not just one representative shot per wing) so it reads clearly as "many
+  // more photos", with a crossfade+slide between photos on every step -
+  // interleaved round-robin across wings so it doesn't read as four
+  // back-to-back blocks by wing.
   (function(){
-    var WINGS = [
-      { label:'סטודיו 1', photos:['images/studio-1.jpg'] },
-      { label:'סטודיו 2', photos:['images/studio-2.jpg'] },
-      { label:'סלון ומטבחון', photos:['images/kitchen.jpg', 'images/salon-live.jpg'] },
-      { label:'חצר ירוקה', photos:['images/yard.jpg'] },
-    ];
-    // every real photo across every wing, plus every event photo — this
-    // is the full set the "all photos" viewer pages through
-    // interleaved on purpose (round-robin across wings) so the strip
-    // doesn't read as four back-to-back blocks by wing
     var ALL_GALLERY_PHOTOS = [
       'images/studio-1.jpg', 'images/studio-2.jpg', 'images/kitchen.jpg', 'images/yard.jpg',
       'images/studio1-event.jpg', 'images/studio2-from-chair.jpg', 'images/salon-live.jpg', 'images/yard-event-1.jpg',
@@ -1371,28 +1377,51 @@
     ];
     var stage = document.getElementById('peek-stage');
     if (!stage) return;
+    var n = ALL_GALLERY_PHOTOS.length;
     var idx = 0;
-    function render(){
-      var n = WINGS.length;
-      var prevW = WINGS[(idx - 1 + n) % n];
-      var curW = WINGS[idx];
-      var nextW = WINGS[(idx + 1) % n];
-      stage.innerHTML =
-        '<button type="button" class="peek-card side" id="peek-side-prev"><img src="' + prevW.photos[0] + '" alt=""></button>' +
-        '<button type="button" class="peek-card center" id="peek-center"><img src="' + curW.photos[0] + '" alt="' + curW.label + '">' +
-          '<div class="peek-caption">' + curW.label + '</div></button>' +
-        '<button type="button" class="peek-card side" id="peek-side-next"><img src="' + nextW.photos[0] + '" alt=""></button>';
-      document.getElementById('peek-side-prev').addEventListener('click', function(){ idx = (idx - 1 + n) % n; render(); });
-      document.getElementById('peek-side-next').addEventListener('click', function(){ idx = (idx + 1) % n; render(); });
-      document.getElementById('peek-center').addEventListener('click', function(){
-        openMegaGallery(ALL_GALLERY_PHOTOS.map(function(src){ return { type:'photo', src:src }; }), curW.photos[0]);
-      });
+    var animating = false;
+    var ANIM_MS = 260;
+    var imgPrev = document.querySelector('#peek-side-prev img');
+    var imgCenter = document.querySelector('#peek-center img');
+    var imgNext = document.querySelector('#peek-side-next img');
+
+    function paint(i){
+      imgPrev.src = ALL_GALLERY_PHOTOS[(i - 1 + n) % n];
+      imgCenter.src = ALL_GALLERY_PHOTOS[i];
+      imgNext.src = ALL_GALLERY_PHOTOS[(i + 1) % n];
     }
+    paint(idx);
+
+    function goTo(step){
+      if (animating || n < 2) return;
+      animating = true;
+      var dirClass = step > 0 ? 'dir-next' : 'dir-prev';
+      stage.classList.add('peek-anim-out', dirClass);
+      setTimeout(function(){
+        idx = ((idx + step) % n + n) % n;
+        paint(idx);
+        stage.classList.remove('peek-anim-out');
+        stage.classList.add('peek-anim-in');
+        // flush layout so the "entering" start position actually applies
+        // before we transition away from it, instead of the browser
+        // coalescing both class changes into one (skipping the animation)
+        void stage.offsetWidth;
+        requestAnimationFrame(function(){
+          stage.classList.remove('peek-anim-in', dirClass);
+          animating = false;
+        });
+      }, ANIM_MS);
+    }
+
+    document.getElementById('peek-side-prev').addEventListener('click', function(){ goTo(-1); });
+    document.getElementById('peek-side-next').addEventListener('click', function(){ goTo(1); });
+    document.getElementById('peek-center').addEventListener('click', function(){
+      openMegaGallery(ALL_GALLERY_PHOTOS.map(function(src){ return { type:'photo', src:src }; }), ALL_GALLERY_PHOTOS[idx]);
+    });
     // ‹ on the right = back, › on the left = forward — same convention
     // already used by the availability calendar's prev/next buttons
-    document.getElementById('peek-prev').addEventListener('click', function(){ idx = (idx - 1 + WINGS.length) % WINGS.length; render(); });
-    document.getElementById('peek-next').addEventListener('click', function(){ idx = (idx + 1) % WINGS.length; render(); });
-    render();
+    document.getElementById('peek-prev').addEventListener('click', function(){ goTo(-1); });
+    document.getElementById('peek-next').addEventListener('click', function(){ goTo(1); });
   })();
 
   // Studio detail modal (photos + future videos, per studio)
