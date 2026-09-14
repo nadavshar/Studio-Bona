@@ -1,0 +1,51 @@
+name: Bona Calendar Sync
+
+# Keeps the public Google Calendar and this site's availability data in
+# sync with the studio's internal calendar, entirely on GitHub's own
+# runners - no external session needs to be running for this to happen.
+#
+# Requires these repository secrets (Settings -> Secrets and variables ->
+# Actions): BONA_OAUTH_CLIENT_ID, BONA_OAUTH_CLIENT_SECRET,
+# BONA_OAUTH_REFRESH_TOKEN, BONA_SERVICE_ACCOUNT_JSON.
+
+on:
+  schedule:
+    - cron: "20 * * * *" # every hour, at :20
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bona-calendar-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run calendar sync + export + publish
+        id: pipeline
+        env:
+          BONA_OAUTH_CLIENT_ID: ${{ secrets.BONA_OAUTH_CLIENT_ID }}
+          BONA_OAUTH_CLIENT_SECRET: ${{ secrets.BONA_OAUTH_CLIENT_SECRET }}
+          BONA_OAUTH_REFRESH_TOKEN: ${{ secrets.BONA_OAUTH_REFRESH_TOKEN }}
+          BONA_SERVICE_ACCOUNT_JSON: ${{ secrets.BONA_SERVICE_ACCOUNT_JSON }}
+        run: node scripts/sync-and-publish.mjs
+
+      - name: Commit and push if index.html changed
+        if: steps.pipeline.outputs.changed == 'true'
+        run: |
+          git config user.name "bona-calendar-sync[bot]"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git commit -m "Auto-update availability data from Google Calendar"
+          git push
