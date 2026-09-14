@@ -32,20 +32,6 @@ jobs:
         with:
           node-version: "20"
 
-      - name: TEMP - fingerprint secrets (no values printed, safe to leave in logs)
-        env:
-          BONA_OAUTH_CLIENT_ID: ${{ secrets.BONA_OAUTH_CLIENT_ID }}
-          BONA_OAUTH_CLIENT_SECRET: ${{ secrets.BONA_OAUTH_CLIENT_SECRET }}
-          BONA_OAUTH_REFRESH_TOKEN: ${{ secrets.BONA_OAUTH_REFRESH_TOKEN }}
-          BONA_SERVICE_ACCOUNT_JSON: ${{ secrets.BONA_SERVICE_ACCOUNT_JSON }}
-        run: |
-          for name in BONA_OAUTH_CLIENT_ID BONA_OAUTH_CLIENT_SECRET BONA_OAUTH_REFRESH_TOKEN BONA_SERVICE_ACCOUNT_JSON; do
-            val="${!name}"
-            len=$(printf '%s' "$val" | wc -c)
-            hash=$(printf '%s' "$val" | sha256sum | cut -c1-12)
-            echo "$name: len=$len sha256_12=$hash"
-          done
-
       - name: Run calendar sync + export + publish
         id: pipeline
         env:
