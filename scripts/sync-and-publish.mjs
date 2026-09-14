@@ -22,7 +22,7 @@ const NOISE_EMOJI = "🔊";
 const OPEN_CLASS_EMOJI = "💧"; // event title format: "<מורה> - <שם הפעילות> 💧"
 
 const FAYA_SIGNUP_URL =
-  "https://rmzsovuz.web.arboxapp.com/?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnmHi11gkZvce6Tb3I2NxtI8lurz_sMEW6CtSjU6AuhLuSTBiR5bU6hgaFxaY_aem_7BWHQnaflNOmrIqSPyS7Mg&allLocations=false";
+  "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false";
 function isFaya(label) {
   const compact = label.toLowerCase().replace(/[.\s]/g, "");
   return compact.includes("fayafam") || compact.includes("faya") || label.includes("פאיה");
