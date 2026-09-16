@@ -570,6 +570,7 @@
   }
   .field input:focus, .field select:focus, .field textarea:focus{ outline:2px solid var(--violet); outline-offset:1px; }
   .field textarea{ resize:vertical; min-height:88px; }
+  .field-hint{ font-size:.78rem; color:var(--ink-soft); margin-top:8px; line-height:1.5; }
   .channel-toggle{ display:flex; gap:10px; margin-bottom:22px; }
   .channel-btn{
     flex:1; padding:12px; border-radius:10px; border:1px solid var(--line); background:var(--cream);
@@ -971,7 +972,15 @@
             </select>
           </div>
         </div>
-        <div class="field"><label for="f-notes">עוד משהו שכדאי שנדע?</label><textarea id="f-notes" placeholder="מספר משתתפים, רמת רעש, בקשות מיוחדות..."></textarea></div>
+        <div class="field">
+          <label>רמת רעש הפעילות (לא חובה)</label>
+          <div class="channel-toggle" id="f-noise-toggle" role="group" aria-label="רמת רעש הפעילות">
+            <button type="button" class="channel-btn" data-noise="שקטה" aria-pressed="false">🤫 שקטה</button>
+            <button type="button" class="channel-btn" data-noise="רועשת" aria-pressed="false">🔊 רועשת</button>
+          </div>
+          <p class="field-hint">שני הסטודיו צמודים תחת אותה קורת גג ויש זליגת סאונד ביניהם — בכדי לדעת האם ניתן לקיים פעילות במקביל לפעילותכן.ם.</p>
+        </div>
+        <div class="field"><label for="f-notes">עוד משהו שכדאי שנדע?</label><textarea id="f-notes" placeholder="מספר משתתפים, בקשות מיוחדות..."></textarea></div>
 
         <button type="submit" class="submit-btn" id="submit-btn">שליחה בוואטסאפ</button>
         <p class="form-note">הפנייה נפתחת בוואטסאפ ונשלחת אלינו ישירות — לא נשמרת באתר.</p>
@@ -1393,7 +1402,7 @@
     var n = ALL_GALLERY_PHOTOS.length;
     var idx = 0;
     var animating = false;
-    var ANIM = { duration: 550, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' };
+    var ANIM = { duration: 750, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' };
 
     // Each slot (side-prev / center / side-next) holds two stacked <img>
     // layers so the outgoing and incoming photo can be visible - and each
@@ -1538,6 +1547,24 @@
     });
   }
 
+  // Noise-level toggle: same pill pattern as the availability day/week
+  // switcher, but a single re-click deselects back to "not specified" -
+  // this is a hint for us, not a required field, since not every activity
+  // (an event, "other") has an obvious noise profile.
+  var noiseValue = '';
+  var noiseToggle = document.getElementById('f-noise-toggle');
+  if (noiseToggle){
+    noiseToggle.querySelectorAll('.channel-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var picking = noiseValue !== btn.dataset.noise;
+        noiseValue = picking ? btn.dataset.noise : '';
+        noiseToggle.querySelectorAll('.channel-btn').forEach(function(b){
+          b.setAttribute('aria-pressed', b === btn && picking ? 'true' : 'false');
+        });
+      });
+    });
+  }
+
   document.getElementById('inquiry-form').addEventListener('submit', function(e){
     e.preventDefault();
     var name = document.getElementById('f-name').value.trim();
@@ -1564,6 +1591,7 @@
     if(time) lines.push('שעה מבוקשת: ' + time);
     lines.push('סוג פעילות: ' + activity);
     lines.push('חלל מועדף: ' + studio);
+    if(noiseValue) lines.push('רמת רעש: ' + noiseValue);
     if(notes) lines.push('הערות: ' + notes);
     var text = lines.join('\n');
 
