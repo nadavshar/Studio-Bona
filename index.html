@@ -270,21 +270,19 @@
       pale color through instead of a clean dissolve between photos */
     transition:width .3s ease, height .3s ease, opacity .3s ease, filter .3s ease, box-shadow .3s ease;
   }
-  .peek-card img{
-    width:100%; height:100%; object-fit:cover; display:block;
-    transition:opacity .5s ease, transform .5s ease;
-  }
+  /* each side-peek/center card holds two stacked photo layers so the
+     outgoing and incoming photo can be visible (and independently
+     animated) at once - the transition itself is driven in JS via the Web
+     Animations API rather than a CSS class toggle: toggling a transform/
+     opacity class on and off through a rAF turned out to be unreliable at
+     actually triggering a transition (the browser sometimes collapsed the
+     "start" and "end" styles into one instantaneous change), which read
+     as the photos just flashing/snapping instead of animating. */
+  .peek-layer{ position:absolute; inset:0; }
+  .peek-layer img{ width:100%; height:100%; object-fit:cover; display:block; }
   .peek-card.side{ width:30%; height:80%; opacity:.45; filter:brightness(.5) saturate(.75); box-shadow:none; margin:0 -7%; z-index:1; }
   .peek-card.side:hover{ opacity:.7; }
   .peek-card.center{ width:50%; height:100%; z-index:3; box-shadow:var(--shadow); }
-  /* a soft dissolve between photos on prev/next instead of an instant swap:
-     JS adds "peek-anim-out" right before swapping each <img>'s src (fading
-     the old photo out with a gentle zoom-in), then swaps to "peek-anim-in"
-     with the new src already in place (starting zoomed out a touch) and
-     removes it a frame later so the browser animates it back to rest - a
-     plain crossfade+ken-burns feel, no directional slide. */
-  #peek-stage.peek-anim-out img{ opacity:0; transform:scale(1.04); }
-  #peek-stage.peek-anim-in img{ opacity:0; transform:scale(.96); }
   @media (max-width:640px){
     .peek-stage{ height:340px; }
     .peek-card.side{ width:12%; margin:0 -4%; }
@@ -780,9 +778,18 @@
     <div class="peek-wrap">
       <button type="button" class="peek-arrow prev" id="peek-prev" aria-label="הקודם">‹</button>
       <div class="peek-stage" id="peek-stage">
-        <button type="button" class="peek-card side" id="peek-side-prev"><img alt="" src=""></button>
-        <button type="button" class="peek-card center" id="peek-center"><img alt="תמונה מהסטודיו" src=""></button>
-        <button type="button" class="peek-card side" id="peek-side-next"><img alt="" src=""></button>
+        <button type="button" class="peek-card side" id="peek-side-prev">
+          <div class="peek-layer"><img alt=""></div>
+          <div class="peek-layer"><img alt=""></div>
+        </button>
+        <button type="button" class="peek-card center" id="peek-center">
+          <div class="peek-layer"><img alt="תמונה מהסטודיו"></div>
+          <div class="peek-layer"><img alt="תמונה מהסטודיו"></div>
+        </button>
+        <button type="button" class="peek-card side" id="peek-side-next">
+          <div class="peek-layer"><img alt=""></div>
+          <div class="peek-layer"><img alt=""></div>
+        </button>
       </div>
       <button type="button" class="peek-arrow next" id="peek-next" aria-label="הבא">›</button>
     </div>
@@ -1367,9 +1374,12 @@
 
   // Gallery: center card with side peeks, cycling through every real photo
   // (not just one representative shot per wing) so it reads clearly as "many
-  // more photos", with a crossfade+slide between photos on every step -
-  // interleaved round-robin across wings so it doesn't read as four
-  // back-to-back blocks by wing.
+  // more photos" - interleaved round-robin across wings so it doesn't read
+  // as four back-to-back blocks by wing. Each step uses a "slide with
+  // depth" transition (the incoming photo starts big and faint like it's
+  // approaching from a distance and settles into place; the outgoing one
+  // recedes and fades) picked after comparing it live against four other
+  // styles at https://claude.ai/artifact/FH2di28EC5Py3aTR6hEh8Y.
   (function(){
     var ALL_GALLERY_PHOTOS = [
       'images/studio-1.jpg', 'images/studio-2.jpg', 'images/kitchen.jpg', 'images/yard.jpg',
@@ -1383,36 +1393,69 @@
     var n = ALL_GALLERY_PHOTOS.length;
     var idx = 0;
     var animating = false;
-    var ANIM_MS = 400;
-    var imgPrev = document.querySelector('#peek-side-prev img');
-    var imgCenter = document.querySelector('#peek-center img');
-    var imgNext = document.querySelector('#peek-side-next img');
+    var ANIM = { duration: 550, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' };
 
-    function paint(i){
-      imgPrev.src = ALL_GALLERY_PHOTOS[(i - 1 + n) % n];
-      imgCenter.src = ALL_GALLERY_PHOTOS[i];
-      imgNext.src = ALL_GALLERY_PHOTOS[(i + 1) % n];
+    // Each slot (side-prev / center / side-next) holds two stacked <img>
+    // layers so the outgoing and incoming photo can be visible - and each
+    // independently animated via the Web Animations API - at the same
+    // time. .animate() runs the motion directly instead of toggling a CSS
+    // class and hoping the browser paints the "start" state before it's
+    // removed, which turned out to be unreliable (the photos would just
+    // snap instead of transitioning).
+    function makeSlot(cardEl){
+      var layers = cardEl.querySelectorAll('.peek-layer');
+      var front = 0;
+      layers[0].style.zIndex = 2;
+      layers[1].style.zIndex = 1;
+      return {
+        setInitial: function(src){ layers[0].querySelector('img').src = src; },
+        go: function(src, dir){
+          var back = layers[1 - front];
+          var frontLayer = layers[front];
+          back.querySelector('img').src = src;
+          back.style.zIndex = 2;
+          frontLayer.style.zIndex = 1;
+          var sign = dir === 'next' ? 1 : -1;
+          var enterKF = [
+            { transform: 'translateX(' + (sign * 65) + '%) scale(1.08)', opacity:.35 },
+            { transform: 'translateX(0%) scale(1)', opacity:1 },
+          ];
+          var exitKF = [
+            { transform: 'translateX(0%) scale(1)', opacity:1 },
+            { transform: 'translateX(' + (sign * -25) + '%) scale(.94)', opacity:.5 },
+          ];
+          var backAnim = back.animate(enterKF, ANIM);
+          var frontAnim = frontLayer.animate(exitKF, ANIM);
+          front = 1 - front;
+          return Promise.all([backAnim.finished, frontAnim.finished]).then(function(){
+            backAnim.cancel();
+            frontAnim.cancel();
+          });
+        },
+      };
     }
-    paint(idx);
+
+    var slotPrev = makeSlot(document.getElementById('peek-side-prev'));
+    var slotCenter = makeSlot(document.getElementById('peek-center'));
+    var slotNext = makeSlot(document.getElementById('peek-side-next'));
+
+    function paintInitial(i){
+      slotPrev.setInitial(ALL_GALLERY_PHOTOS[(i - 1 + n) % n]);
+      slotCenter.setInitial(ALL_GALLERY_PHOTOS[i]);
+      slotNext.setInitial(ALL_GALLERY_PHOTOS[(i + 1) % n]);
+    }
+    paintInitial(idx);
 
     function goTo(step){
       if (animating || n < 2) return;
       animating = true;
-      stage.classList.add('peek-anim-out');
-      setTimeout(function(){
-        idx = ((idx + step) % n + n) % n;
-        paint(idx);
-        stage.classList.remove('peek-anim-out');
-        stage.classList.add('peek-anim-in');
-        // flush layout so the "entering" start position actually applies
-        // before we transition away from it, instead of the browser
-        // coalescing both class changes into one (skipping the animation)
-        void stage.offsetWidth;
-        requestAnimationFrame(function(){
-          stage.classList.remove('peek-anim-in');
-          animating = false;
-        });
-      }, ANIM_MS);
+      var dir = step > 0 ? 'next' : 'prev';
+      idx = ((idx + step) % n + n) % n;
+      Promise.all([
+        slotPrev.go(ALL_GALLERY_PHOTOS[(idx - 1 + n) % n], dir),
+        slotCenter.go(ALL_GALLERY_PHOTOS[idx], dir),
+        slotNext.go(ALL_GALLERY_PHOTOS[(idx + 1) % n], dir),
+      ]).then(function(){ animating = false; });
     }
 
     document.getElementById('peek-side-prev').addEventListener('click', function(){ goTo(-1); });
