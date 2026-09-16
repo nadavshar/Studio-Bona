@@ -263,25 +263,28 @@
   }
   .peek-arrow:hover{ border-color:var(--violet); color:var(--violet-deep); }
   .peek-stage{ display:flex; align-items:center; justify-content:center; height:440px; width:100%; max-width:760px; }
-  .peek-card{ position:relative; border:none; padding:0; cursor:pointer; border-radius:20px; overflow:hidden; flex-shrink:0; transition:width .3s ease, height .3s ease, opacity .3s ease, filter .3s ease, box-shadow .3s ease; }
+  .peek-card{
+    position:relative; border:none; padding:0; cursor:pointer; border-radius:20px; overflow:hidden; flex-shrink:0;
+    background:var(--surface); /* a <button> defaults to a light native background - without
+      setting this, the moment the img's opacity dips during the crossfade below flashed that
+      pale color through instead of a clean dissolve between photos */
+    transition:width .3s ease, height .3s ease, opacity .3s ease, filter .3s ease, box-shadow .3s ease;
+  }
   .peek-card img{
     width:100%; height:100%; object-fit:cover; display:block;
-    transition:opacity .35s ease, transform .35s ease;
+    transition:opacity .5s ease, transform .5s ease;
   }
   .peek-card.side{ width:30%; height:80%; opacity:.45; filter:brightness(.5) saturate(.75); box-shadow:none; margin:0 -7%; z-index:1; }
   .peek-card.side:hover{ opacity:.7; }
   .peek-card.center{ width:50%; height:100%; z-index:3; box-shadow:var(--shadow); }
-  /* crossfade+slide between photos on prev/next instead of an instant swap:
+  /* a soft dissolve between photos on prev/next instead of an instant swap:
      JS adds "peek-anim-out" right before swapping each <img>'s src (fading
-     the old photo out and nudging it toward the direction of travel), then
-     swaps to "peek-anim-in" with the new src already in place (starting
-     from the opposite offset) and removes it a frame later so the browser
-     animates back to rest - a standard two-phase crossfade since the same
-     <img> elements are reused rather than rebuilt every time. */
-  #peek-stage.peek-anim-out.dir-next img{ opacity:0; transform:translateX(-24px); }
-  #peek-stage.peek-anim-out.dir-prev img{ opacity:0; transform:translateX(24px); }
-  #peek-stage.peek-anim-in.dir-next img{ opacity:0; transform:translateX(24px); }
-  #peek-stage.peek-anim-in.dir-prev img{ opacity:0; transform:translateX(-24px); }
+     the old photo out with a gentle zoom-in), then swaps to "peek-anim-in"
+     with the new src already in place (starting zoomed out a touch) and
+     removes it a frame later so the browser animates it back to rest - a
+     plain crossfade+ken-burns feel, no directional slide. */
+  #peek-stage.peek-anim-out img{ opacity:0; transform:scale(1.04); }
+  #peek-stage.peek-anim-in img{ opacity:0; transform:scale(.96); }
   @media (max-width:640px){
     .peek-stage{ height:340px; }
     .peek-card.side{ width:12%; margin:0 -4%; }
@@ -1380,7 +1383,7 @@
     var n = ALL_GALLERY_PHOTOS.length;
     var idx = 0;
     var animating = false;
-    var ANIM_MS = 260;
+    var ANIM_MS = 400;
     var imgPrev = document.querySelector('#peek-side-prev img');
     var imgCenter = document.querySelector('#peek-center img');
     var imgNext = document.querySelector('#peek-side-next img');
@@ -1395,8 +1398,7 @@
     function goTo(step){
       if (animating || n < 2) return;
       animating = true;
-      var dirClass = step > 0 ? 'dir-next' : 'dir-prev';
-      stage.classList.add('peek-anim-out', dirClass);
+      stage.classList.add('peek-anim-out');
       setTimeout(function(){
         idx = ((idx + step) % n + n) % n;
         paint(idx);
@@ -1407,7 +1409,7 @@
         // coalescing both class changes into one (skipping the animation)
         void stage.offsetWidth;
         requestAnimationFrame(function(){
-          stage.classList.remove('peek-anim-in', dirClass);
+          stage.classList.remove('peek-anim-in');
           animating = false;
         });
       }, ANIM_MS);
