@@ -4,13 +4,20 @@ name: Bona Calendar Sync
 # sync with the studio's internal calendar, entirely on GitHub's own
 # runners - no external session needs to be running for this to happen.
 #
+# Triggered externally every 15 minutes by a free cron-job.org job that
+# calls the workflow_dispatch API. GitHub's own `schedule:` trigger is
+# deliberately NOT used here: it only fires every 3-6 hours in practice
+# (documented GitHub Actions throttling under load) and, on the rare
+# occasions it did land close to the external trigger, caused a git push
+# race between the two runs. The retry loop below still guards against
+# the separate, unavoidable race with other commits landing on `main`
+# (e.g. site edits pushed by someone else) while this job is running.
+#
 # Requires these repository secrets (Settings -> Secrets and variables ->
 # Actions): BONA_OAUTH_CLIENT_ID, BONA_OAUTH_CLIENT_SECRET,
 # BONA_OAUTH_REFRESH_TOKEN, BONA_SERVICE_ACCOUNT_JSON.
 
 on:
-  schedule:
-    - cron: "20 * * * *" # every hour, at :20
   workflow_dispatch: {}
 
 permissions:
@@ -23,6 +30,11 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      BONA_OAUTH_CLIENT_ID: ${{ secrets.BONA_OAUTH_CLIENT_ID }}
+      BONA_OAUTH_CLIENT_SECRET: ${{ secrets.BONA_OAUTH_CLIENT_SECRET }}
+      BONA_OAUTH_REFRESH_TOKEN: ${{ secrets.BONA_OAUTH_REFRESH_TOKEN }}
+      BONA_SERVICE_ACCOUNT_JSON: ${{ secrets.BONA_SERVICE_ACCOUNT_JSON }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,20 +44,28 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Run calendar sync + export + publish
-        id: pipeline
-        env:
-          BONA_OAUTH_CLIENT_ID: ${{ secrets.BONA_OAUTH_CLIENT_ID }}
-          BONA_OAUTH_CLIENT_SECRET: ${{ secrets.BONA_OAUTH_CLIENT_SECRET }}
-          BONA_OAUTH_REFRESH_TOKEN: ${{ secrets.BONA_OAUTH_REFRESH_TOKEN }}
-          BONA_SERVICE_ACCOUNT_JSON: ${{ secrets.BONA_SERVICE_ACCOUNT_JSON }}
-        run: node scripts/sync-and-publish.mjs
-
-      - name: Commit and push if index.html changed
-        if: steps.pipeline.outputs.changed == 'true'
+      - name: Sync + export + publish, committing with retry against a push race
         run: |
           git config user.name "bona-calendar-sync[bot]"
           git config user.email "actions@users.noreply.github.com"
-          git add index.html
-          git commit -m "Auto-update availability data from Google Calendar"
-          git push
+          for attempt in 1 2 3 4 5; do
+            node scripts/sync-and-publish.mjs
+            if git diff --quiet -- index.html; then
+              echo "No change to publish."
+              break
+            fi
+            git add index.html
+            git commit -m "Auto-update availability data from Google Calendar"
+            if git push; then
+              echo "Pushed successfully."
+              break
+            fi
+            echo "Push rejected (someone else pushed to main meanwhile) - rebuilding against the fresh base and retrying (attempt $attempt)..."
+            git reset --hard HEAD~1
+            git fetch origin main
+            git reset --hard origin/main
+            if [ "$attempt" = "5" ]; then
+              echo "::error::Failed to push after 5 attempts."
+              exit 1
+            fi
+          done
