@@ -333,6 +333,19 @@
   .lightbox img{ max-width:min(900px,92vw); max-height:82vh; object-fit:contain; border-radius:12px; }
   .lightbox button{ position:absolute; top:24px; left:24px; background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer; line-height:1; }
 
+  /* Event video "grow to play" view: clicking a video in the small grid
+     re-parents that same <video> element (no clone, so playback carries
+     over without restarting) into this overlay at a noticeably larger
+     size - not native fullscreen, just bigger than the grid card. */
+  .video-lightbox{ position:fixed; inset:0; z-index:100; background:rgba(var(--overlay-rgb),.94); display:none; align-items:center; justify-content:center; padding:24px; }
+  .video-lightbox.open{ display:flex; }
+  .video-lightbox-frame{
+    width:100%; max-width:min(480px,92vw); max-height:88vh; aspect-ratio:9/16;
+    border-radius:16px; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .video-lightbox-frame video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .video-lightbox button{ position:absolute; top:24px; left:24px; background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer; line-height:1; }
+
   /* ---------- STUDIO DETAIL MODAL ---------- */
   .studio-modal{ position:fixed; inset:0; z-index:110; background:rgba(var(--overlay-rgb),.85); display:none; align-items:flex-start; justify-content:center; padding:5vh 20px; overflow-y:auto; }
   .studio-modal.open{ display:flex; }
@@ -682,6 +695,11 @@
   <img id="lb-img" src="" alt="">
 </div>
 
+<div class="video-lightbox" id="video-lightbox">
+  <button id="vlb-close" aria-label="סגירה">&times;</button>
+  <div class="video-lightbox-frame" id="vlb-frame"></div>
+</div>
+
 <div class="mega-view" id="mega-view">
   <button class="mega-close" id="mega-close" aria-label="סגירה">&times;</button>
   <div class="mega-featured">
@@ -777,7 +795,7 @@
       <h2>הגלריה</h2>
     </div>
     <div class="peek-wrap">
-      <button type="button" class="peek-arrow prev" id="peek-prev" aria-label="הקודם">‹</button>
+      <button type="button" class="peek-arrow prev" id="peek-prev" aria-label="הקודם">›</button>
       <div class="peek-stage" id="peek-stage">
         <button type="button" class="peek-card side" id="peek-side-prev">
           <div class="peek-layer"><img alt=""></div>
@@ -792,7 +810,7 @@
           <div class="peek-layer"><img alt=""></div>
         </button>
       </div>
-      <button type="button" class="peek-arrow next" id="peek-next" aria-label="הבא">›</button>
+      <button type="button" class="peek-arrow next" id="peek-next" aria-label="הבא">‹</button>
     </div>
   </div>
 </section>
@@ -857,7 +875,7 @@
       </div>
       <div class="event-video-card">
         <div class="event-video-frame"><video controls playsinline preload="none" poster="videos/posters/studio-clip-poster.jpg"><source src="videos/studio-clip.mp4" type="video/mp4"></video></div>
-        <div class="event-video-title">ערב חברתי בסטודיו</div>
+        <div class="event-video-title">סופשבוע של חגיגות</div>
       </div>
       <div class="event-video-card">
         <div class="event-video-frame"><video controls playsinline preload="none" poster="videos/posters/bona-birthday-poster.jpg"><source src="videos/bona-birthday.mp4" type="video/mp4"></video></div>
@@ -869,7 +887,7 @@
       </div>
       <div class="event-video-card">
         <div class="event-video-frame"><video controls playsinline preload="none" poster="videos/posters/bona-noam-poster.jpg"><source src="videos/bona-noam.mp4" type="video/mp4"></video></div>
-        <div class="event-video-title">היכרות עם המתחם</div>
+        <div class="event-video-title">פעילויות לדוגמה בסטודיו בואנה</div>
       </div>
     </div>
 
@@ -1284,11 +1302,33 @@
   })();
   // Event videos: clicking anywhere on the frame (not just the tiny native
   // play button) starts playback with sound — the click itself is the user
-  // gesture, so the browser never blocks the audio.
+  // gesture, so the browser never blocks the audio. It also grows the same
+  // video (re-parented, not cloned, so playback isn't interrupted) into a
+  // larger — not native-fullscreen — focused view.
+  var videoLightbox = document.getElementById('video-lightbox');
+  var vlbFrame = document.getElementById('vlb-frame');
+  function closeVideoLightbox(){
+    var video = vlbFrame.firstElementChild;
+    videoLightbox.classList.remove('open');
+    if (video && video._homeFrame) {
+      video.pause();
+      video._homeFrame.appendChild(video);
+    }
+  }
   document.querySelectorAll('.event-video-frame video').forEach(function(video){
+    video._homeFrame = video.parentNode;
     video.addEventListener('click', function(){
-      if (video.paused) video.play();
+      if (video.paused) { var p = video.play(); if (p) p.catch(function(){}); }
+      if (video.parentNode !== vlbFrame) {
+        vlbFrame.appendChild(video);
+        videoLightbox.classList.add('open');
+      }
     });
+  });
+  document.getElementById('vlb-close').addEventListener('click', closeVideoLightbox);
+  videoLightbox.addEventListener('click', function(e){ if (e.target === videoLightbox) closeVideoLightbox(); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && videoLightbox.classList.contains('open')) closeVideoLightbox();
   });
   // Hero background video: built with YouTube's own IFrame Player API
   // (rather than hand-parsing postMessage events, which turned out to be
@@ -1472,8 +1512,15 @@
     document.getElementById('peek-center').addEventListener('click', function(){
       openMegaGallery(ALL_GALLERY_PHOTOS.map(function(src){ return { type:'photo', src:src }; }), ALL_GALLERY_PHOTOS[idx]);
     });
-    // ‹ on the right = back, › on the left = forward — same convention
-    // already used by the availability calendar's prev/next buttons
+    // Glyphs here are the opposite of the availability calendar's prev/next
+    // buttons on purpose: this carousel visibly peeks the adjacent photo on
+    // each side before you click, so the arrow's own pointing direction
+    // needs to match the side of the peek it brings to center - › on the
+    // right brings the right-hand peek in (id="peek-prev" still means
+    // "index - 1", just displayed with a rightward glyph here); ‹ on the
+    // left brings the left-hand peek in ("index + 1"). Confirmed against a
+    // report that the previous glyph pairing (mirroring the calendar's,
+    // where there's no visible peek to align with) felt backwards here.
     document.getElementById('peek-prev').addEventListener('click', function(){ goTo(-1); });
     document.getElementById('peek-next').addEventListener('click', function(){ goTo(1); });
   })();
