@@ -462,6 +462,12 @@
     cursor:pointer; transition:border-color .15s ease, background .15s ease;
   }
   .avail-wk-day:hover, .avail-wk-day:focus-visible{ border-color:var(--violet); background:var(--surface); }
+  /* a day with no data (already passed, before days[0] starts - or past
+     the synced range) still gets its own fixed Sun-Sat slot instead of
+     being skipped, so the grid never reflows a shorter week's columns
+     into the wrong day-of-week; it just can't be clicked into or open. */
+  .avail-wk-day.is-empty{ opacity:.35; cursor:default; }
+  .avail-wk-day.is-empty:hover{ border-color:var(--line); background:var(--surface-soft); }
   .avail-wk-date{ text-align:center; font-size:.78rem; font-weight:700; margin-bottom:8px; }
   .avail-wk-date span{ display:block; font-weight:400; color:var(--ink-soft); font-size:.72rem; }
   .avail-wk-studio + .avail-wk-studio{ margin-top:8px; padding-top:8px; border-top:1px dashed var(--line); }
@@ -795,7 +801,7 @@
       <h2>הגלריה</h2>
     </div>
     <div class="peek-wrap">
-      <button type="button" class="peek-arrow prev" id="peek-prev" aria-label="הקודם">›</button>
+      <button type="button" class="peek-arrow prev" id="peek-prev" aria-label="הקודם">‹</button>
       <div class="peek-stage" id="peek-stage">
         <button type="button" class="peek-card side" id="peek-side-prev">
           <div class="peek-layer"><img alt=""></div>
@@ -810,7 +816,7 @@
           <div class="peek-layer"><img alt=""></div>
         </button>
       </div>
-      <button type="button" class="peek-arrow next" id="peek-next" aria-label="הבא">‹</button>
+      <button type="button" class="peek-arrow next" id="peek-next" aria-label="הבא">›</button>
     </div>
   </div>
 </section>
@@ -892,7 +898,7 @@
     </div>
 
     <div class="events-cta">
-      <p>מתכננים משהו שהוא לא שיעור או סדנה של השגרה?</p>
+      <p>יש לך אירוע מיוחד בקרוב? יש לנו את המרחב המיוחד עבורו!</p>
       <button type="button" class="btn btn-primary" id="events-cta-btn">ספרו לנו על האירוע</button>
     </div>
   </div>
@@ -1061,22 +1067,31 @@
     var mode = 'week'; // 'week' | 'day' — weekly view of the current week is the default; only one is ever shown
     var dayIndex = 0;   // index into days[] for day view
 
-    // Weeks always line up with the real Sunday–Saturday calendar week, not
-    // a rolling 7-day window from whatever day "today" happens to be. Since
-    // days[] only ever starts at today (no data before it), the very first
-    // week shown is a short partial week (today through the coming Saturday);
-    // every week after that is a full Sunday–Saturday span.
-    function weekStartFor(idx){
+    // Weeks always line up with the real Sunday–Saturday calendar week, and
+    // every week always renders all 7 fixed day-of-week slots - even ones
+    // days[] has no data for (already passed, since days[] only starts at
+    // today; or past the synced range). Earlier this sliced days[] by index,
+    // so a short first week (today through Saturday) rendered fewer columns
+    // than a full week - and because the grid has no memory of which
+    // day-of-week a column belongs to, every column shifted one slot left
+    // versus a full week. Tracking real dates directly (independent of
+    // days[]'s own indices) fixes that: a missing day still gets its slot,
+    // just rendered empty.
+    var isoFmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem', year: 'numeric', month: '2-digit', day: '2-digit' });
+    function isoDateOf(d){ return isoFmt.format(d); }
+    function addDays(d, n){ var r = new Date(d.getTime()); r.setDate(r.getDate() + n); return r; }
+    function sundayOf(d){ return addDays(d, -d.getDay()); }
+
+    var daysByDate = {};
+    days.forEach(function(day){ daysByDate[day.date] = day; });
+    var currentWeekSunday = sundayOf(dateOf(days[0]));
+    var weekOffset = 0; // 0 = week containing today; 1 = next week; etc.
+
+    function weekOffsetForIndex(idx){
       idx = Math.max(0, Math.min(days.length - 1, idx));
-      var dow = dateOf(days[idx]).getDay(); // 0 = Sunday .. 6 = Saturday
-      return Math.max(0, idx - dow);
+      var thatSunday = sundayOf(dateOf(days[idx]));
+      return Math.round((thatSunday - currentWeekSunday) / (7 * 24 * 3600 * 1000));
     }
-    function weekLengthFrom(startIdx){
-      var dow = dateOf(days[startIdx]).getDay();
-      var untilSaturday = 6 - dow;
-      return Math.min(untilSaturday + 1, days.length - startIdx);
-    }
-    var weekStart = weekStartFor(0);  // index into days[] for first visible week
 
     function weekChip(slots, day, studioLabel){
       var wrap = document.createElement('div');
@@ -1118,42 +1133,54 @@
 
     function renderWeek(){
       weekView.innerHTML = '';
-      var slice = days.slice(weekStart, weekStart + weekLengthFrom(weekStart));
-      slice.forEach(function(day, i){
-        var d = dateOf(day);
+      var weekSunday = addDays(currentWeekSunday, weekOffset * 7);
+      for (var i = 0; i < 7; i++){
+        var d = addDays(weekSunday, i);
+        var iso = isoDateOf(d);
+        var day = daysByDate[iso];
+
         var col = document.createElement('div');
         col.className = 'avail-wk-day';
-        col.setAttribute('role', 'button');
-        col.setAttribute('tabindex', '0');
-        col.setAttribute('aria-label', 'עברו לתצוגה היומית של ' + weekdayLong.format(d) + ', ' + dayFmt.format(d));
-        var dayGlobalIndex = weekStart + i;
-        col.addEventListener('click', function(){ goToDay(dayGlobalIndex); });
-        col.addEventListener('keydown', function(e){
-          if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); goToDay(dayGlobalIndex); }
-        });
 
         var dateEl = document.createElement('div');
         dateEl.className = 'avail-wk-date';
         dateEl.innerHTML = weekdayShort.format(d) + "'<span>" + dayFmt.format(d) + '</span>';
         col.appendChild(dateEl);
 
-        [1, 2].forEach(function(n){
-          var s = document.createElement('div');
-          s.className = 'avail-wk-studio';
-          var label = document.createElement('div');
-          label.className = 'avail-wk-studio-label';
-          label.textContent = 'סטודיו ' + n;
-          s.appendChild(label);
-          s.appendChild(weekChip(day['studio' + n], day, 'סטודיו ' + n));
-          col.appendChild(s);
-        });
-        weekView.appendChild(col);
-      });
+        if (day){
+          col.setAttribute('role', 'button');
+          col.setAttribute('tabindex', '0');
+          col.setAttribute('aria-label', 'עברו לתצוגה היומית של ' + weekdayLong.format(d) + ', ' + dayFmt.format(d));
+          var dayGlobalIndex = days.indexOf(day);
+          col.addEventListener('click', function(gi){ return function(){ goToDay(gi); }; }(dayGlobalIndex));
+          col.addEventListener('keydown', function(gi){ return function(e){
+            if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); goToDay(gi); }
+          }; }(dayGlobalIndex));
 
-      var first = dateOf(slice[0]), last = dateOf(slice[slice.length - 1]);
-      rangeLabel.textContent = dayFmt.format(first) + ' – ' + dayFmt.format(last);
-      prevBtn.disabled = weekStart <= 0;
-      nextBtn.disabled = weekStart + slice.length >= days.length;
+          [1, 2].forEach(function(n){
+            var s = document.createElement('div');
+            s.className = 'avail-wk-studio';
+            var label = document.createElement('div');
+            label.className = 'avail-wk-studio-label';
+            label.textContent = 'סטודיו ' + n;
+            s.appendChild(label);
+            s.appendChild(weekChip(day['studio' + n], day, 'סטודיו ' + n));
+            col.appendChild(s);
+          });
+        } else {
+          // no data for this date (already passed, or beyond the synced
+          // range) - still occupies its fixed Sun-Sat slot, just dimmed
+          // and inert, so this week's current-ness stays visible at a
+          // glance instead of the grid quietly shrinking.
+          col.classList.add('is-empty');
+          col.setAttribute('aria-hidden', 'true');
+        }
+        weekView.appendChild(col);
+      }
+
+      rangeLabel.textContent = dayFmt.format(weekSunday) + ' – ' + dayFmt.format(addDays(weekSunday, 6));
+      prevBtn.disabled = weekOffset <= 0;
+      nextBtn.disabled = !daysByDate[isoDateOf(addDays(weekSunday, 7))];
     }
 
     var DAY_START_H = 8, DAY_END_H = 23; // timeline window
@@ -1274,7 +1301,7 @@
     modeWeekBtn.addEventListener('click', function(){
       if (mode === 'week') return;
       mode = 'week';
-      weekStart = weekStartFor(dayIndex);
+      weekOffset = weekOffsetForIndex(dayIndex);
       modeWeekBtn.setAttribute('aria-pressed', 'true');
       modeDayBtn.setAttribute('aria-pressed', 'false');
       render();
@@ -1282,18 +1309,25 @@
     modeDayBtn.addEventListener('click', function(){
       if (mode === 'day') return;
       mode = 'day';
-      dayIndex = weekStart;
+      // jump to the first date in the displayed week that actually has
+      // data - the week can start with empty (already-passed) slots now
+      var weekSunday = addDays(currentWeekSunday, weekOffset * 7);
+      dayIndex = 0;
+      for (var i = 0; i < 7; i++){
+        var found = daysByDate[isoDateOf(addDays(weekSunday, i))];
+        if (found){ dayIndex = days.indexOf(found); break; }
+      }
       modeDayBtn.setAttribute('aria-pressed', 'true');
       modeWeekBtn.setAttribute('aria-pressed', 'false');
       render();
     });
     prevBtn.addEventListener('click', function(){
-      if (mode === 'week') weekStart = weekStart <= 0 ? 0 : weekStartFor(weekStart - 1);
+      if (mode === 'week') weekOffset = Math.max(0, weekOffset - 1);
       else dayIndex = Math.max(0, dayIndex - 1);
       render();
     });
     nextBtn.addEventListener('click', function(){
-      if (mode === 'week') weekStart = Math.min(days.length - 1, weekStart + weekLengthFrom(weekStart));
+      if (mode === 'week') weekOffset += 1;
       else dayIndex = Math.min(days.length - 1, dayIndex + 1);
       render();
     });
@@ -1512,17 +1546,17 @@
     document.getElementById('peek-center').addEventListener('click', function(){
       openMegaGallery(ALL_GALLERY_PHOTOS.map(function(src){ return { type:'photo', src:src }; }), ALL_GALLERY_PHOTOS[idx]);
     });
-    // Glyphs here are the opposite of the availability calendar's prev/next
-    // buttons on purpose: this carousel visibly peeks the adjacent photo on
-    // each side before you click, so the arrow's own pointing direction
-    // needs to match the side of the peek it brings to center - › on the
-    // right brings the right-hand peek in (id="peek-prev" still means
-    // "index - 1", just displayed with a rightward glyph here); ‹ on the
-    // left brings the left-hand peek in ("index + 1"). Confirmed against a
-    // report that the previous glyph pairing (mirroring the calendar's,
-    // where there's no visible peek to align with) felt backwards here.
-    document.getElementById('peek-prev').addEventListener('click', function(){ goTo(-1); });
-    document.getElementById('peek-next').addEventListener('click', function(){ goTo(1); });
+    // This carousel visibly peeks the adjacent photo on each side before
+    // you click, and per direct feedback it should behave like a physical
+    // reel being turned: the right-hand arrow (‹, id="peek-prev") pulls the
+    // *left*-hand peek into the center, sliding the old center over to the
+    // right; the left-hand arrow (›, id="peek-next") does the mirror image
+    // - pulls the *right*-hand peek to center, old center slides left. So
+    // each button's step is intentionally the opposite of what its
+    // id/glyph would suggest in isolation; go by this behavior, not the
+    // names, if touching this again.
+    document.getElementById('peek-prev').addEventListener('click', function(){ goTo(1); });
+    document.getElementById('peek-next').addEventListener('click', function(){ goTo(-1); });
   })();
 
   // Studio detail modal (photos + future videos, per studio)
