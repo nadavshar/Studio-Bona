@@ -1498,7 +1498,13 @@
           back.querySelector('img').src = src;
           back.style.zIndex = 2;
           frontLayer.style.zIndex = 1;
-          var sign = dir === 'next' ? 1 : -1;
+          // sign is intentionally the opposite of what "next"/"prev" would
+          // suggest: bringing the *left* peek to center (dir 'next', bound
+          // to the right-hand arrow) should visually read as everything
+          // sliding *rightward* - entering from the left, exiting to the
+          // right - to match the content actually moving from left to
+          // center to right; sign controls that motion, not the step math.
+          var sign = dir === 'next' ? -1 : 1;
           var enterKF = [
             { transform: 'translateX(' + (sign * 65) + '%) scale(1.08)', opacity:.35 },
             { transform: 'translateX(0%) scale(1)', opacity:1 },
