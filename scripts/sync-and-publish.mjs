@@ -39,6 +39,34 @@ function extractPhone(text) {
   return m ? m[0].replace(/[^\d]/g, "") : null;
 }
 
+// A single dropped connection to Google's APIs (seen occasionally as a bare
+// "fetch failed" from the GitHub Actions runner - a transient DNS/TLS blip,
+// nothing to do with our code) used to fail the whole run; the next
+// scheduled run 15 minutes later always picked it back up cleanly, but it
+// still meant a red run and a spurious "All jobs have failed" email. Retry
+// transient failures (network-level throws, 429, and 5xx) a few times with
+// a short backoff before giving up for real.
+async function fetchWithRetry(url, options, { retries = 3, delayMs = 1000 } = {}) {
+  let lastErr;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, options);
+      if (!res.ok && (res.status === 429 || res.status >= 500) && attempt < retries) {
+        await new Promise((r) => setTimeout(r, delayMs * attempt));
+        continue;
+      }
+      return res;
+    } catch (err) {
+      lastErr = err;
+      if (attempt < retries) {
+        await new Promise((r) => setTimeout(r, delayMs * attempt));
+        continue;
+      }
+    }
+  }
+  throw lastErr;
+}
+
 // ---- credential loaders (env-based) ----
 function b64url(input) {
   return Buffer.from(input).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
@@ -51,7 +79,7 @@ function requireEnv(name) {
 }
 
 async function getOAuthToken() {
-  const res = await fetch("https://oauth2.googleapis.com/token", {
+  const res = await fetchWithRetry("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -83,7 +111,7 @@ async function getServiceAccountToken(scope) {
   signer.update(unsigned);
   const signature = signer.sign(key.private_key).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   const jwt = `${unsigned}.${signature}`;
-  const res = await fetch("https://oauth2.googleapis.com/token", {
+  const res = await fetchWithRetry("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer", assertion: jwt }),
@@ -101,7 +129,7 @@ async function listAllEvents(token, calendarId, params) {
     const url = new URL(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`);
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
     if (pageToken) url.searchParams.set("pageToken", pageToken);
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    const res = await fetchWithRetry(url, { headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
     if (!res.ok) throw new Error(`list events failed (${calendarId}): ${JSON.stringify(data)}`);
     items.push(...(data.items || []));
@@ -175,7 +203,7 @@ async function runSync(oauthToken, saToken) {
   for (const [sourceId, body] of desired) {
     const existingEvent = existingBySource.get(sourceId);
     if (!existingEvent) {
-      const res = await fetch(
+      const res = await fetchWithRetry(
         `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(PUBLIC_CAL)}/events`,
         { method: "POST", headers: { Authorization: `Bearer ${saToken}`, "Content-Type": "application/json" }, body: JSON.stringify(body) }
       );
@@ -188,7 +216,7 @@ async function runSync(oauthToken, saToken) {
         existingEvent.end?.dateTime !== body.end.dateTime ||
         (existingEvent.description || "") !== (body.description || "");
       if (changed) {
-        const res = await fetch(
+        const res = await fetchWithRetry(
           `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(PUBLIC_CAL)}/events/${existingEvent.id}`,
           { method: "PATCH", headers: { Authorization: `Bearer ${saToken}`, "Content-Type": "application/json" }, body: JSON.stringify(body) }
         );
@@ -202,7 +230,7 @@ async function runSync(oauthToken, saToken) {
 
   for (const [sourceId, ev] of existingBySource) {
     if (!desired.has(sourceId)) {
-      const res = await fetch(
+      const res = await fetchWithRetry(
         `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(PUBLIC_CAL)}/events/${ev.id}`,
         { method: "DELETE", headers: { Authorization: `Bearer ${saToken}` } }
       );
