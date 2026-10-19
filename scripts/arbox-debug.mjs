@@ -2,93 +2,79 @@ import { chromium } from "playwright";
 import { writeFileSync } from "node:fs";
 
 const URL = "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false";
+const API_URL = "https://apiappv2.arboxapp.com/api/v2/site/schedule/betweenDates";
 
 async function main() {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1280, height: 2400 } });
 
-  const requests = [];
+  let scheduleReqHeaders = null;
   page.on("request", (req) => {
     const u = req.url();
-    if (req.resourceType() === "xhr" || req.resourceType() === "fetch") {
-      let headers = {};
-      try { headers = req.headers(); } catch {}
-      requests.push({ method: req.method(), url: u, type: req.resourceType(), headers, postData: req.postData() });
+    if (u.startsWith(API_URL)) {
+      try { scheduleReqHeaders = req.headers(); } catch {}
     }
-  });
-
-  const responses = [];
-  let fullBodies = {};
-  page.on("response", async (res) => {
-    const u = res.url();
-    const req = res.request();
-    if (req.resourceType() !== "xhr" && req.resourceType() !== "fetch") return;
-    let body = "";
-    try {
-      const ct = res.headers()["content-type"] || "";
-      if (ct.includes("json") || ct.includes("text")) {
-        body = await res.text();
-      }
-    } catch (e) {
-      body = "(could not read body: " + e.message + ")";
-    }
-    responses.push({ status: res.status(), url: u, bodyLength: body.length });
-    fullBodies[u + "#" + responses.length] = body;
   });
 
   console.log("Navigating to", URL);
   await page.goto(URL, { waitUntil: "networkidle", timeout: 45000 }).catch((e) => {
     console.log("goto networkidle timed out/failed:", e.message, "- continuing anyway");
   });
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(4000);
 
-  // Try clicking forward/next-week controls if present, to trigger any
-  // additional lazy-loaded API calls (filters, categories, coaches list).
-  try {
-    const nextBtn = page.locator("button, [role=button]").filter({ hasText: /הבא|next|›|»/i }).first();
-    if (await nextBtn.count()) {
-      await nextBtn.click({ timeout: 3000 }).catch(() => {});
-      await page.waitForTimeout(3000);
-    }
-  } catch {}
-
-  // Try opening a single class/event card to see if a detail call fires.
-  try {
-    const card = page.locator("[class*='event'], [class*='class'], [class*='schedule'] li, [class*='schedule'] [class*='card']").first();
-    if (await card.count()) {
-      await card.click({ timeout: 3000 }).catch(() => {});
-      await page.waitForTimeout(2000);
-    }
-  } catch {}
-
-  const title = await page.title();
-  console.log("PAGE TITLE:", title);
-
-  const bodyText = await page.evaluate(() => document.body.innerText);
-  writeFileSync("arbox-debug-text.txt", bodyText);
-  writeFileSync("arbox-debug-html.html", await page.content());
-  writeFileSync("arbox-debug-requests.json", JSON.stringify(requests, null, 2));
-  writeFileSync("arbox-debug-responses.json", JSON.stringify(responses, null, 2));
-  writeFileSync("arbox-debug-bodies.json", JSON.stringify(fullBodies, null, 2));
-  await page.screenshot({ path: "arbox-debug-screenshot.png", fullPage: true });
-
-  console.log("=== XHR/FETCH REQUESTS SEEN (" + requests.length + ") ===");
-  requests.forEach((r) => console.log(r.method, r.url, r.postData ? "  POSTDATA=" + r.postData.slice(0, 300) : ""));
-
-  console.log("=== RESPONSES SEEN (" + responses.length + ") ===");
-  responses.forEach((r) => console.log(r.status, r.url, "len=" + r.bodyLength));
-
-  console.log("=== FULL BODY DUMPS FOR INTERESTING ENDPOINTS ===");
-  for (const [key, body] of Object.entries(fullBodies)) {
-    const url = key.split("#")[0];
-    if (/betweenDates|categor|coach|instructor|teacher|filter/i.test(url) && body) {
-      console.log("--- FULL BODY: " + key + " (length " + body.length + ") ---");
-      console.log(body);
-      console.log("--- END BODY ---");
-    }
-  }
+  console.log("=== BROWSER'S REQUEST HEADERS FOR betweenDates ===");
+  console.log(JSON.stringify(scheduleReqHeaders, null, 2));
 
   await browser.close();
+
+  console.log("\n=== NOW TESTING A PLAIN NODE fetch() WITH NO BROWSER, NO COOKIES ===");
+  const today = new Date();
+  const from = today.toISOString().slice(0, 10);
+  const toDate = new Date(today.getTime() + 6 * 86400000);
+  const to = toDate.toISOString().slice(0, 10);
+
+  // Attempt 1: minimal headers, just what a server-to-server call would send.
+  try {
+    const res1 = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ to, from, locations_box_id: 21821 }),
+    });
+    const text1 = await res1.text();
+    console.log("ATTEMPT 1 (minimal headers) status:", res1.status);
+    console.log("ATTEMPT 1 body (first 1500 chars):", text1.slice(0, 1500));
+  } catch (e) {
+    console.log("ATTEMPT 1 failed:", e.message);
+  }
+
+  // Attempt 2: mimic browser more closely - Origin/Referer + any auth-ish
+  // header seen from the captured browser request (if present).
+  try {
+    const mimicHeaders = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Origin": "https://rmzsovuz.web.arboxapp.com",
+      "Referer": URL,
+    };
+    if (scheduleReqHeaders) {
+      for (const k of Object.keys(scheduleReqHeaders)) {
+        if (/auth|token|key|x-/i.test(k) && !["x-forwarded-for"].includes(k.toLowerCase())) {
+          mimicHeaders[k] = scheduleReqHeaders[k];
+        }
+      }
+    }
+    console.log("ATTEMPT 2 headers used:", JSON.stringify(mimicHeaders, null, 2));
+    const res2 = await fetch(API_URL, {
+      method: "POST",
+      headers: mimicHeaders,
+      body: JSON.stringify({ to, from, locations_box_id: 21821 }),
+    });
+    const text2 = await res2.text();
+    console.log("ATTEMPT 2 (mimic browser headers) status:", res2.status);
+    console.log("ATTEMPT 2 body (first 1500 chars):", text2.slice(0, 1500));
+  } catch (e) {
+    console.log("ATTEMPT 2 failed:", e.message);
+  }
 }
 
 main().catch((e) => {
