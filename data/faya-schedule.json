@@ -1,25 +1,15 @@
 {
-  "generatedAt": "2026-10-19T11:45:35.715Z",
+  "generatedAt": "2026-10-19T12:00:51.991Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
-    {
-      "date": "2026-10-20",
-      "time": "10:00",
-      "end_time": "11:00",
-      "title": "שיעורי בר",
-      "coach": "דניאלה",
-      "free": 15,
-      "registered": 0,
-      "max_users": 15
-    },
     {
       "date": "2026-10-20",
       "time": "11:00",
       "end_time": "12:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "ליאור אייסיג",
-      "free": 16,
-      "registered": 4,
+      "free": 15,
+      "registered": 5,
       "max_users": 20
     },
     {
