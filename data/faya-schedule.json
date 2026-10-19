@@ -1,17 +1,7 @@
 {
-  "generatedAt": "2026-10-19T07:45:37.999Z",
+  "generatedAt": "2026-10-19T08:00:47.922Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
-    {
-      "date": "2026-10-19",
-      "time": "11:00",
-      "end_time": "12:15",
-      "title": "היפהופ נשים מתחילות",
-      "coach": "שליו פרידמן",
-      "free": 10,
-      "registered": 10,
-      "max_users": 20
-    },
     {
       "date": "2026-10-20",
       "time": "10:00",
@@ -168,8 +158,8 @@
       "end_time": "22:00",
       "title": "שיעור עקבים עם גניה",
       "coach": "גניה גפונוב",
-      "free": 19,
-      "registered": 1,
+      "free": 20,
+      "registered": 0,
       "max_users": 20
     },
     {
