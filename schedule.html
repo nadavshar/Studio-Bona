@@ -138,6 +138,12 @@
       ['studio1', 'studio2'].forEach(function(key, idx){
         (day[key] || []).forEach(function(e){
           if (!e.public) return;
+          // Faya.Fam classes booked at Bona show up here as a generic
+          // "Faya.Fam" placeholder (Bona's calendar doesn't know the real
+          // class name) - the Arbox feed below has the same class with its
+          // real name, teacher and spot count, so skip the placeholder to
+          // avoid listing the same class twice.
+          if (e.title === 'Faya.Fam') return;
           pushItem(day.date, {
             time: e.start, end: e.end,
             title: e.title || '',
