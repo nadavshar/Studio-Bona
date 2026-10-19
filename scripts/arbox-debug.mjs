@@ -75,6 +75,32 @@ async function main() {
   } catch (e) {
     console.log("ATTEMPT 2 failed:", e.message);
   }
+
+  // Attempt 3: copy every header the real browser sent for this request,
+  // verbatim (including the app-identification headers boxfk/whitelabel/
+  // identifier/lang/newsite/referername/version/kiosk, which attempt 2's
+  // auth/token/key/x- filter dropped).
+  try {
+    if (!scheduleReqHeaders) {
+      console.log("ATTEMPT 3 skipped: no captured browser headers");
+    } else {
+      const fullHeaders = { ...scheduleReqHeaders };
+      delete fullHeaders["content-length"];
+      delete fullHeaders["host"];
+      delete fullHeaders["connection"];
+      console.log("ATTEMPT 3 headers used:", JSON.stringify(fullHeaders, null, 2));
+      const res3 = await fetch(API_URL, {
+        method: "POST",
+        headers: fullHeaders,
+        body: JSON.stringify({ to, from, locations_box_id: 21821 }),
+      });
+      const text3 = await res3.text();
+      console.log("ATTEMPT 3 (full verbatim browser headers) status:", res3.status);
+      console.log("ATTEMPT 3 body (first 2000 chars):", text3.slice(0, 2000));
+    }
+  } catch (e) {
+    console.log("ATTEMPT 3 failed:", e.message);
+  }
 }
 
 main().catch((e) => {
