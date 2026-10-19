@@ -54,29 +54,27 @@
   }
   .item{
     background:var(--surface); border:1px solid var(--line); border-radius:14px;
-    padding:14px 16px; margin-bottom:10px; display:flex; align-items:center; gap:14px;
+    padding:14px 16px; margin-bottom:10px;
+    display:flex; flex-direction:column; gap:4px;
     box-shadow:var(--shadow-sm);
   }
-  .item-time{
-    font-weight:700; font-size:.95rem; min-width:88px; text-align:center;
-    color:var(--violet-deep);
-  }
-  .item-time small{display:block; font-weight:400; color:var(--ink-soft); font-size:.72rem;}
-  .item-body{flex:1; min-width:0;}
-  .item-title{font-weight:700; font-size:1rem;}
-  .item-meta{color:var(--ink-soft); font-size:.82rem; margin-top:2px;}
+  .item-top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .item-time{font-weight:700; font-size:.95rem; color:var(--violet-deep); white-space:nowrap;}
+  .item-time small{font-weight:400; color:var(--ink-soft); font-size:.78rem;}
   .item-source{
     font-size:.68rem; font-weight:700; padding:3px 9px; border-radius:999px;
-    white-space:nowrap; align-self:flex-start;
+    white-space:nowrap; flex-shrink:0;
   }
   .item-source.bona{color:var(--mauve); background:var(--mauve-soft);}
   .item-source.faya{color:var(--violet-deep); background:var(--violet-soft);}
+  .item-title{font-weight:700; font-size:1rem; margin-top:4px;}
+  .item-meta{color:var(--ink-soft); font-size:.82rem;}
+  .item-free{font-size:.75rem; color:var(--ink-soft);}
   .item-link{
     font-size:.8rem; font-weight:700; color:var(--violet); text-decoration:none;
-    white-space:nowrap;
+    white-space:nowrap; margin-top:6px; align-self:flex-start;
   }
   .item-link:hover{text-decoration:underline;}
-  .item-free{font-size:.75rem; color:var(--ink-soft); margin-top:2px;}
   .empty-note, .error-note{color:var(--ink-soft); font-size:.9rem; padding:24px 0;}
   .error-note{color:var(--mauve);}
   footer{border-top:1px solid var(--line); padding:20px 0; text-align:center; color:var(--ink-soft); font-size:.82rem;}
@@ -198,33 +196,37 @@
         var row = document.createElement('div');
         row.className = 'item';
 
+        var topEl = document.createElement('div');
+        topEl.className = 'item-top';
+
         var timeEl = document.createElement('div');
         timeEl.className = 'item-time';
-        timeEl.innerHTML = it.time + (it.end ? '<small>עד ' + it.end + '</small>' : '');
-        row.appendChild(timeEl);
-
-        var bodyEl = document.createElement('div');
-        bodyEl.className = 'item-body';
-        var titleEl = document.createElement('div');
-        titleEl.className = 'item-title';
-        titleEl.textContent = it.title || 'שיעור';
-        bodyEl.appendChild(titleEl);
-        var metaEl = document.createElement('div');
-        metaEl.className = 'item-meta';
-        metaEl.textContent = it.meta || '';
-        bodyEl.appendChild(metaEl);
-        if (typeof it.free === 'number'){
-          var freeEl = document.createElement('div');
-          freeEl.className = 'item-free';
-          freeEl.textContent = it.free > 0 ? (it.free + ' מקומות פנויים') : 'מלא';
-          bodyEl.appendChild(freeEl);
-        }
-        row.appendChild(bodyEl);
+        timeEl.innerHTML = it.time + (it.end ? ' <small>עד ' + it.end + '</small>' : '');
+        topEl.appendChild(timeEl);
 
         var sourceEl = document.createElement('span');
         sourceEl.className = 'item-source ' + it.source;
         sourceEl.textContent = it.source === 'faya' ? 'Faya.Fam' : 'בואנה';
-        row.appendChild(sourceEl);
+        topEl.appendChild(sourceEl);
+
+        row.appendChild(topEl);
+
+        var titleEl = document.createElement('div');
+        titleEl.className = 'item-title';
+        titleEl.textContent = it.title || 'שיעור';
+        row.appendChild(titleEl);
+
+        var metaEl = document.createElement('div');
+        metaEl.className = 'item-meta';
+        metaEl.textContent = it.meta || '';
+        row.appendChild(metaEl);
+
+        if (typeof it.free === 'number'){
+          var freeEl = document.createElement('div');
+          freeEl.className = 'item-free';
+          freeEl.textContent = it.free > 0 ? (it.free + ' מקומות פנויים') : 'מלא';
+          row.appendChild(freeEl);
+        }
 
         if (it.link){
           var linkEl = document.createElement('a');
