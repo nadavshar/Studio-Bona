@@ -324,6 +324,13 @@ async function publishToIndexHtml(availability) {
   return true;
 }
 
+async function writeAvailabilityJsonFile(availability) {
+  const { writeFileSync, mkdirSync } = await import("node:fs");
+  const dataUrl = new URL("../data/", import.meta.url);
+  mkdirSync(dataUrl, { recursive: true });
+  writeFileSync(new URL("availability.json", dataUrl), JSON.stringify(availability));
+}
+
 async function main() {
   const [oauthToken, saToken] = await Promise.all([
     getOAuthToken(),
@@ -336,6 +343,17 @@ async function main() {
   // token works fine, the calendar scope above already covers read access)
   const availability = await runExport(saToken);
   const changed = await publishToIndexHtml(availability);
+  await writeAvailabilityJsonFile(availability);
+
+  // Faya's own class schedule (read-only, from their public Arbox feed) for
+  // the combined /schedule.html page. A failure here shouldn't fail Bona's
+  // own calendar sync - log it and move on, next run picks it back up.
+  try {
+    const { writeFayaScheduleFile } = await import("./fetch-faya-schedule.mjs");
+    await writeFayaScheduleFile();
+  } catch (e) {
+    console.error("FAYA FETCH FAILED (non-fatal):", e.message);
+  }
 
   // Signal to the workflow (via GITHUB_OUTPUT) whether a commit is needed.
   if (process.env.GITHUB_OUTPUT) {

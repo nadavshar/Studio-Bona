@@ -50,12 +50,12 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           for attempt in 1 2 3 4 5; do
             node scripts/sync-and-publish.mjs
-            if git diff --quiet -- index.html; then
+            if git diff --quiet -- index.html data/ && [ -z "$(git status --porcelain data/)" ]; then
               echo "No change to publish."
               break
             fi
-            git add index.html
-            git commit -m "Auto-update availability data from Google Calendar"
+            git add index.html data/
+            git commit -m "Auto-update availability + Faya schedule data"
             if git push; then
               echo "Pushed successfully."
               break

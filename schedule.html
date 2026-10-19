@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>לוח פעילויות — סטודיו בואנה</title>
+<meta name="description" content="כל הפעילויות הקרובות בסטודיו בואנה ושל Faya.Fam — מתעדכן אוטומטית.">
+<link rel="canonical" href="https://studio-bona.com/schedule.html">
+<meta name="theme-color" content="#1c1512">
+<link rel="icon" type="image/png" href="images/logo.png">
+<meta name="robots" content="index,follow">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap">
+<style>
+  :root{
+    --cream:#1c1512;
+    --surface:#261c18;
+    --surface-soft:#302420;
+    --ink:#f5ece6;
+    --ink-soft:#cbb6ae;
+    --line:#4a372e;
+    --violet:#d987cc;
+    --violet-deep:#eaabde;
+    --violet-soft:rgba(217,135,204,.22);
+    --mauve:#f0a868;
+    --mauve-soft:#3a2c22;
+    --shadow-sm: 0 12px 28px -16px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:'Heebo',system-ui,sans-serif;
+    direction:rtl; text-align:right;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  .wrap{max-width:860px; margin:0 auto; padding:0 20px;}
+
+  header{padding:28px 0 18px; border-bottom:1px solid var(--line);}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.05rem; text-decoration:none;}
+  .brand img{width:30px; height:30px; border-radius:8px;}
+  h1{margin:16px 0 6px; font-size:1.7rem; font-weight:800;}
+  .sub{color:var(--ink-soft); font-size:.95rem; line-height:1.6;}
+  .updated{color:var(--ink-soft); font-size:.78rem; margin-top:10px;}
+
+  main{padding:28px 0 60px;}
+  .day{margin-bottom:28px;}
+  .day-head{
+    font-weight:700; font-size:1.05rem; margin-bottom:10px;
+    display:flex; align-items:baseline; gap:8px;
+  }
+  .day-head .today-tag{
+    font-size:.7rem; font-weight:700; color:var(--violet-deep);
+    background:var(--violet-soft); padding:2px 8px; border-radius:999px;
+  }
+  .item{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:14px 16px; margin-bottom:10px; display:flex; align-items:center; gap:14px;
+    box-shadow:var(--shadow-sm);
+  }
+  .item-time{
+    font-weight:700; font-size:.95rem; min-width:88px; text-align:center;
+    color:var(--violet-deep);
+  }
+  .item-time small{display:block; font-weight:400; color:var(--ink-soft); font-size:.72rem;}
+  .item-body{flex:1; min-width:0;}
+  .item-title{font-weight:700; font-size:1rem;}
+  .item-meta{color:var(--ink-soft); font-size:.82rem; margin-top:2px;}
+  .item-source{
+    font-size:.68rem; font-weight:700; padding:3px 9px; border-radius:999px;
+    white-space:nowrap; align-self:flex-start;
+  }
+  .item-source.bona{color:var(--mauve); background:var(--mauve-soft);}
+  .item-source.faya{color:var(--violet-deep); background:var(--violet-soft);}
+  .item-link{
+    font-size:.8rem; font-weight:700; color:var(--violet); text-decoration:none;
+    white-space:nowrap;
+  }
+  .item-link:hover{text-decoration:underline;}
+  .item-free{font-size:.75rem; color:var(--ink-soft); margin-top:2px;}
+  .empty-note, .error-note{color:var(--ink-soft); font-size:.9rem; padding:24px 0;}
+  .error-note{color:var(--mauve);}
+  footer{border-top:1px solid var(--line); padding:20px 0; text-align:center; color:var(--ink-soft); font-size:.82rem;}
+  footer a{color:var(--violet);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="/"><img src="images/logo.png" alt="לוגו סטודיו בואנה">סטודיו בואנה</a>
+    <h1>לוח פעילויות</h1>
+    <p class="sub">כל השיעורים הפתוחים לקהל בסטודיו בואנה ואצל Faya.Fam — ביחד, בלוח אחד שמתעדכן אוטומטית.</p>
+    <div class="updated" id="updated-at"></div>
+  </div>
+</header>
+
+<main class="wrap" id="schedule-root">
+  <p class="empty-note">טוען...</p>
+</main>
+
+<footer>
+  <a href="/">חזרה לאתר סטודיו בואנה</a>
+</footer>
+
+<script>
+(function(){
+  var DAYS_AHEAD = 14;
+  var root = document.getElementById('schedule-root');
+  var updatedEl = document.getElementById('updated-at');
+
+  function fmtDayLabel(dateStr){
+    var d = new Date(dateStr + 'T00:00:00');
+    var weekday = new Intl.DateTimeFormat('he-IL', { timeZone:'Asia/Jerusalem', weekday:'long' }).format(d);
+    var md = new Intl.DateTimeFormat('he-IL', { timeZone:'Asia/Jerusalem', day:'numeric', month:'numeric' }).format(d);
+    return weekday + ', ' + md;
+  }
+
+  function todayIso(){
+    return new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Jerusalem', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
+  }
+
+  Promise.all([
+    fetch('data/availability.json').then(function(r){ return r.ok ? r.json() : { days: [] }; }).catch(function(){ return { days: [] }; }),
+    fetch('data/faya-schedule.json').then(function(r){ return r.ok ? r.json() : { classes: [] }; }).catch(function(){ return { classes: [] }; })
+  ]).then(function(results){
+    var availability = results[0] || { days: [] };
+    var faya = results[1] || { classes: [] };
+    var today = todayIso();
+
+    // byDate: { "2026-10-19": [ {time,end,title,meta,source,link,free} ] }
+    var byDate = {};
+    function pushItem(date, item){
+      if (!byDate[date]) byDate[date] = [];
+      byDate[date].push(item);
+    }
+
+    (availability.days || []).forEach(function(day){
+      ['studio1', 'studio2'].forEach(function(key, idx){
+        (day[key] || []).forEach(function(e){
+          if (!e.public) return;
+          pushItem(day.date, {
+            time: e.start, end: e.end,
+            title: e.title || '',
+            meta: (e.teacher ? e.teacher + ' · ' : '') + 'סטודיו ' + (idx + 1),
+            source: 'bona',
+            link: e.signup || null
+          });
+        });
+      });
+    });
+
+    (faya.classes || []).forEach(function(c){
+      pushItem(c.date, {
+        time: c.time, end: c.end_time,
+        title: c.title || '',
+        meta: c.coach || 'Faya.Fam',
+        source: 'faya',
+        link: faya.signupUrl || null,
+        free: (typeof c.free === 'number') ? c.free : null
+      });
+    });
+
+    var dates = [];
+    for (var i = 0; i < DAYS_AHEAD; i++){
+      var d = new Date(Date.now() + i * 86400000);
+      dates.push(new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Jerusalem', year:'numeric', month:'2-digit', day:'2-digit' }).format(d));
+    }
+
+    root.innerHTML = '';
+    var anyItem = false;
+
+    dates.forEach(function(date){
+      var items = (byDate[date] || []).slice().sort(function(a, b){ return (a.time || '').localeCompare(b.time || ''); });
+      if (!items.length) return;
+      anyItem = true;
+
+      var dayEl = document.createElement('div');
+      dayEl.className = 'day';
+
+      var headEl = document.createElement('div');
+      headEl.className = 'day-head';
+      headEl.textContent = fmtDayLabel(date);
+      if (date === today){
+        var tag = document.createElement('span');
+        tag.className = 'today-tag';
+        tag.textContent = 'היום';
+        headEl.appendChild(tag);
+      }
+      dayEl.appendChild(headEl);
+
+      items.forEach(function(it){
+        var row = document.createElement('div');
+        row.className = 'item';
+
+        var timeEl = document.createElement('div');
+        timeEl.className = 'item-time';
+        timeEl.innerHTML = it.time + (it.end ? '<small>עד ' + it.end + '</small>' : '');
+        row.appendChild(timeEl);
+
+        var bodyEl = document.createElement('div');
+        bodyEl.className = 'item-body';
+        var titleEl = document.createElement('div');
+        titleEl.className = 'item-title';
+        titleEl.textContent = it.title || 'שיעור';
+        bodyEl.appendChild(titleEl);
+        var metaEl = document.createElement('div');
+        metaEl.className = 'item-meta';
+        metaEl.textContent = it.meta || '';
+        bodyEl.appendChild(metaEl);
+        if (typeof it.free === 'number'){
+          var freeEl = document.createElement('div');
+          freeEl.className = 'item-free';
+          freeEl.textContent = it.free > 0 ? (it.free + ' מקומות פנויים') : 'מלא';
+          bodyEl.appendChild(freeEl);
+        }
+        row.appendChild(bodyEl);
+
+        var sourceEl = document.createElement('span');
+        sourceEl.className = 'item-source ' + it.source;
+        sourceEl.textContent = it.source === 'faya' ? 'Faya.Fam' : 'בואנה';
+        row.appendChild(sourceEl);
+
+        if (it.link){
+          var linkEl = document.createElement('a');
+          linkEl.className = 'item-link';
+          linkEl.href = it.link;
+          linkEl.target = '_blank';
+          linkEl.rel = 'noopener noreferrer';
+          linkEl.textContent = 'הרשמה ↗';
+          row.appendChild(linkEl);
+        }
+
+        dayEl.appendChild(row);
+      });
+
+      root.appendChild(dayEl);
+    });
+
+    if (!anyItem){
+      root.innerHTML = '<p class="empty-note">אין כרגע פעילויות פתוחות לקהל בשבועיים הקרובים.</p>';
+    }
+
+    var ts = availability.generatedAt || faya.generatedAt;
+    if (ts){
+      var d = new Date(ts);
+      updatedEl.textContent = 'עודכן לאחרונה: ' + new Intl.DateTimeFormat('he-IL', { timeZone:'Asia/Jerusalem', dateStyle:'short', timeStyle:'short' }).format(d);
+    }
+  }).catch(function(err){
+    root.innerHTML = '<p class="error-note">לא הצלחנו לטעון את הלוח כרגע. נסו לרענן, או צרו קשר בוואטסאפ.</p>';
+    console.error(err);
+  });
+})();
+</script>
+
+</body>
+</html>
