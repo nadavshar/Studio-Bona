@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-20T07:15:34.388Z",
+  "generatedAt": "2026-10-20T07:30:42.297Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -254,23 +254,13 @@
     },
     {
       "date": "2026-11-03",
-      "time": "19:00",
-      "end_time": "20:15",
-      "title": "שיעור עם שחר חג׳יוב",
-      "coach": "שחר חגיוב",
-      "free": 15,
+      "time": "21:00",
+      "end_time": "22:15",
+      "title": "שיעור עם   נועה חבוט",
+      "coach": "נועה חבוט",
+      "free": 30,
       "registered": 0,
-      "max_users": 15
-    },
-    {
-      "date": "2026-11-03",
-      "time": "20:15",
-      "end_time": "21:30",
-      "title": "שיעור עם דני חזן",
-      "coach": "דניאל חזן",
-      "free": 15,
-      "registered": 0,
-      "max_users": 15
+      "max_users": 30
     },
     {
       "date": "2026-11-05",
