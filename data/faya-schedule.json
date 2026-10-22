@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T07:15:33.400Z",
+  "generatedAt": "2026-10-22T07:30:45.512Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -108,8 +108,8 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "דניאלה",
-      "free": 15,
-      "registered": 0,
+      "free": 14,
+      "registered": 1,
       "max_users": 15
     },
     {
@@ -156,7 +156,7 @@
       "date": "2026-10-30",
       "time": "13:00",
       "end_time": "15:00",
-      "title": "גאז עם טיילה",
+      "title": "קולאב ג׳אז טיילה ועדי מיוחס",
       "coach": "טיילה ג׳ייד",
       "free": 27,
       "registered": 3,
@@ -277,7 +277,7 @@
       "time": "10:00",
       "end_time": "11:00",
       "title": "שיעורי בר",
-      "coach": "נומה היינמן",
+      "coach": "עדי מיוחס",
       "free": 15,
       "registered": 0,
       "max_users": 15
