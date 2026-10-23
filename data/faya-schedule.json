@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-23T09:00:47.152Z",
+  "generatedAt": "2026-10-23T09:15:37.185Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -8,8 +8,8 @@
       "end_time": "14:15",
       "title": "THE SWITCH- שיעורים מתחלפים",
       "coach": "אופיר זר",
-      "free": 7,
-      "registered": 23,
+      "free": 6,
+      "registered": 24,
       "max_users": 30
     },
     {
@@ -48,8 +48,8 @@
       "end_time": "20:00",
       "title": "שיעורי בר",
       "coach": "מור",
-      "free": 18,
-      "registered": 2,
+      "free": 19,
+      "registered": 1,
       "max_users": 20
     },
     {
@@ -78,8 +78,8 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "דניאלה",
-      "free": 14,
-      "registered": 1,
+      "free": 13,
+      "registered": 2,
       "max_users": 15
     },
     {
