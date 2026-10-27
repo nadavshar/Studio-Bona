@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-27T18:01:05.325Z",
+  "generatedAt": "2026-10-27T18:15:36.495Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -118,8 +118,8 @@
       "end_time": "22:00",
       "title": "מאסטר קלאס מאיה אגסי",
       "coach": "מאיה אגסי",
-      "free": 19,
-      "registered": 11,
+      "free": 20,
+      "registered": 10,
       "max_users": 30
     },
     {
@@ -248,8 +248,8 @@
       "end_time": "22:00",
       "title": "שיעור עקבים",
       "coach": "גניה גפונוב",
-      "free": 15,
-      "registered": 0,
+      "free": 14,
+      "registered": 1,
       "max_users": 15
     },
     {
