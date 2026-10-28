@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-28T21:45:36.912Z",
+  "generatedAt": "2026-10-28T22:15:32.909Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -78,8 +78,8 @@
       "end_time": "12:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "ליאור אייסיג",
-      "free": 20,
-      "registered": 0,
+      "free": 18,
+      "registered": 2,
       "max_users": 20
     },
     {
@@ -370,6 +370,26 @@
       "coach": "שירה",
       "free": 15,
       "registered": 0,
+      "max_users": 15
+    },
+    {
+      "date": "2026-11-18",
+      "time": "19:00",
+      "end_time": "20:30",
+      "title": "THE SWITCH- שיעורים מתחלפים",
+      "coach": "יובל רחמים",
+      "free": 15,
+      "registered": 0,
+      "max_users": 15
+    },
+    {
+      "date": "2026-11-18",
+      "time": "20:30",
+      "end_time": "22:00",
+      "title": "THE SWITCH- שיעורים מתחלפים",
+      "coach": "נועה אברמוב",
+      "free": 10,
+      "registered": 5,
       "max_users": 15
     }
   ]
