@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T21:45:35.366Z",
+  "generatedAt": "2026-11-02T22:00:48.439Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -391,6 +391,16 @@
       "free": 29,
       "registered": 1,
       "max_users": 30
+    },
+    {
+      "date": "2026-11-23",
+      "time": "11:00",
+      "end_time": "12:15",
+      "title": "היפהופ נשים מתחילות",
+      "coach": "שליו פרידמן",
+      "free": 20,
+      "registered": 0,
+      "max_users": 20
     }
   ]
 }
