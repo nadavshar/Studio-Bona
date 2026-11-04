@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T15:00:48.976Z",
+  "generatedAt": "2026-11-04T15:30:50.324Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -8,8 +8,8 @@
       "end_time": "20:30",
       "title": "THE SWITCH- שיעורים מתחלפים",
       "coach": "נועם דוד",
-      "free": 2,
-      "registered": 13,
+      "free": 0,
+      "registered": 15,
       "max_users": 15
     },
     {
@@ -108,8 +108,8 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "גילי גרינשטיין",
-      "free": 14,
-      "registered": 1,
+      "free": 13,
+      "registered": 2,
       "max_users": 15
     },
     {
