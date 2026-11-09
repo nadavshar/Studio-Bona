@@ -1,17 +1,7 @@
 {
-  "generatedAt": "2026-11-09T08:01:18.560Z",
+  "generatedAt": "2026-11-09T08:15:38.727Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
-    {
-      "date": "2026-11-10",
-      "time": "09:00",
-      "end_time": "10:00",
-      "title": "פילאטיס מזרן",
-      "coach": "תמר",
-      "free": 7,
-      "registered": 1,
-      "max_users": 8
-    },
     {
       "date": "2026-11-10",
       "time": "10:00",
@@ -138,8 +128,8 @@
       "end_time": "22:00",
       "title": "היפ הופ מתקדמים עדן ממן",
       "coach": "עדן ממן",
-      "free": 30,
-      "registered": 0,
+      "free": 29,
+      "registered": 1,
       "max_users": 30
     },
     {
