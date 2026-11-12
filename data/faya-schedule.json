@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T21:45:33.341Z",
+  "generatedAt": "2026-11-12T22:00:42.742Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -328,6 +328,46 @@
       "end_time": "12:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "ליאור אייסיג",
+      "free": 20,
+      "registered": 0,
+      "max_users": 20
+    },
+    {
+      "date": "2026-12-03",
+      "time": "09:00",
+      "end_time": "10:00",
+      "title": "שיעורי בר",
+      "coach": "טלי",
+      "free": 15,
+      "registered": 0,
+      "max_users": 15
+    },
+    {
+      "date": "2026-12-03",
+      "time": "10:00",
+      "end_time": "11:15",
+      "title": "גמישות- הקשתות",
+      "coach": "שי טולדנו",
+      "free": 15,
+      "registered": 0,
+      "max_users": 15
+    },
+    {
+      "date": "2026-12-03",
+      "time": "11:15",
+      "end_time": "12:30",
+      "title": "גמישות - שפגטים",
+      "coach": "שי טולדנו",
+      "free": 15,
+      "registered": 0,
+      "max_users": 15
+    },
+    {
+      "date": "2026-12-03",
+      "time": "19:00",
+      "end_time": "20:15",
+      "title": "היפהופ נשים מתחילות",
+      "coach": "אדל אוייף",
       "free": 20,
       "registered": 0,
       "max_users": 20
