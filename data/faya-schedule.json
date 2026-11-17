@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T11:15:31.988Z",
+  "generatedAt": "2026-11-17T11:30:40.316Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -328,9 +328,9 @@
       "end_time": "12:30",
       "title": "עקבים מתחילות עם שירה",
       "coach": "שירה",
-      "free": 30,
+      "free": 20,
       "registered": 0,
-      "max_users": 30
+      "max_users": 20
     },
     {
       "date": "2026-12-06",
@@ -358,9 +358,9 @@
       "end_time": "20:00",
       "title": "האוס",
       "coach": "יובל ביטון",
-      "free": 30,
+      "free": 20,
       "registered": 0,
-      "max_users": 30
+      "max_users": 20
     },
     {
       "date": "2026-12-07",
