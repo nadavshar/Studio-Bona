@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-21T21:45:34.627Z",
+  "generatedAt": "2026-11-21T22:00:41.086Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -118,8 +118,8 @@
       "end_time": "22:00",
       "title": "מאסטר קלאס עקבים",
       "coach": "דניאל לני",
-      "free": 17,
-      "registered": 3,
+      "free": 16,
+      "registered": 4,
       "max_users": 20
     },
     {
@@ -401,6 +401,16 @@
       "free": 15,
       "registered": 0,
       "max_users": 15
+    },
+    {
+      "date": "2026-12-12",
+      "time": "19:30",
+      "end_time": "21:30",
+      "title": "קולאב שחר ודני",
+      "coach": "דניאל חזן",
+      "free": 29,
+      "registered": 1,
+      "max_users": 30
     }
   ]
 }
