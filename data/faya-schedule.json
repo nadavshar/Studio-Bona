@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T22:00:46.768Z",
+  "generatedAt": "2026-11-25T22:15:33.025Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -248,8 +248,8 @@
       "end_time": "12:30",
       "title": "מאסטר קלאס איתן גורנו",
       "coach": "איתן גורנו",
-      "free": 30,
-      "registered": 0,
+      "free": 29,
+      "registered": 1,
       "max_users": 30
     },
     {
