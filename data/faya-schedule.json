@@ -1,25 +1,15 @@
 {
-  "generatedAt": "2026-11-25T17:00:46.172Z",
+  "generatedAt": "2026-11-25T17:15:33.319Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
-    {
-      "date": "2026-11-26",
-      "time": "10:00",
-      "end_time": "11:00",
-      "title": "שיעורי בר",
-      "coach": "עדי מיוחס",
-      "free": 15,
-      "registered": 0,
-      "max_users": 15
-    },
     {
       "date": "2026-11-26",
       "time": "10:00",
       "end_time": "11:15",
       "title": "גמישות- הקשתות",
       "coach": "שי טולדנו",
-      "free": 11,
-      "registered": 4,
+      "free": 12,
+      "registered": 3,
       "max_users": 15
     },
     {
@@ -28,8 +18,8 @@
       "end_time": "12:30",
       "title": "גמישות - שפגטים",
       "coach": "שי טולדנו",
-      "free": 12,
-      "registered": 3,
+      "free": 13,
+      "registered": 2,
       "max_users": 15
     },
     {
