@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T06:30:38.183Z",
+  "generatedAt": "2026-11-26T06:45:31.522Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -108,8 +108,8 @@
       "end_time": "12:30",
       "title": "גמישות - שפגטים",
       "coach": "שי טולדנו",
-      "free": 15,
-      "registered": 0,
+      "free": 14,
+      "registered": 1,
       "max_users": 15
     },
     {
@@ -238,8 +238,8 @@
       "end_time": "12:30",
       "title": "מאסטר קלאס איתן גורנו",
       "coach": "איתן גורנו",
-      "free": 29,
-      "registered": 1,
+      "free": 28,
+      "registered": 2,
       "max_users": 30
     },
     {
