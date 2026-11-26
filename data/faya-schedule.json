@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T09:45:35.510Z",
+  "generatedAt": "2026-11-26T10:00:49.783Z",
   "signupUrl": "https://rmzsovuz.web.arboxapp.com/group?whitelabel=Arbox&lang=he&location=21821&referrer=SITE&utm_source=ig&utm_medium=social&utm_content=link_in_bio&allLocations=false",
   "classes": [
     {
@@ -38,9 +38,9 @@
       "end_time": "22:00",
       "title": "מאסטר קלאס עקבים",
       "coach": "דניאל לני",
-      "free": 12,
+      "free": 0,
       "registered": 8,
-      "max_users": 20
+      "max_users": 8
     },
     {
       "date": "2026-11-30",
@@ -48,9 +48,9 @@
       "end_time": "12:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "שליו פרידמן",
-      "free": 17,
+      "free": 5,
       "registered": 3,
-      "max_users": 20
+      "max_users": 8
     },
     {
       "date": "2026-12-01",
@@ -58,9 +58,9 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "גילי גרינשטיין",
-      "free": 15,
+      "free": 8,
       "registered": 0,
-      "max_users": 15
+      "max_users": 8
     },
     {
       "date": "2026-12-01",
@@ -68,9 +68,9 @@
       "end_time": "12:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "ליאור אייסיג",
-      "free": 20,
-      "registered": 0,
-      "max_users": 20
+      "free": 7,
+      "registered": 1,
+      "max_users": 8
     },
     {
       "date": "2026-12-03",
@@ -78,9 +78,9 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "טלי",
-      "free": 13,
+      "free": 6,
       "registered": 2,
-      "max_users": 15
+      "max_users": 8
     },
     {
       "date": "2026-12-03",
@@ -88,9 +88,9 @@
       "end_time": "11:15",
       "title": "גמישות- הקשתות",
       "coach": "שי טולדנו",
-      "free": 15,
-      "registered": 0,
-      "max_users": 15
+      "free": 7,
+      "registered": 1,
+      "max_users": 8
     },
     {
       "date": "2026-12-03",
@@ -98,8 +98,8 @@
       "end_time": "12:30",
       "title": "גמישות - שפגטים",
       "coach": "שי טולדנו",
-      "free": 14,
-      "registered": 1,
+      "free": 13,
+      "registered": 2,
       "max_users": 15
     },
     {
@@ -108,9 +108,9 @@
       "end_time": "20:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "אדל אוייף",
-      "free": 20,
+      "free": 8,
       "registered": 0,
-      "max_users": 20
+      "max_users": 8
     },
     {
       "date": "2026-12-04",
@@ -118,9 +118,9 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "נומה היינמן",
-      "free": 14,
+      "free": 7,
       "registered": 1,
-      "max_users": 15
+      "max_users": 8
     },
     {
       "date": "2026-12-05",
@@ -128,9 +128,9 @@
       "end_time": "20:00",
       "title": "היפ הופ מתקדמים",
       "coach": "אלעד ירון",
-      "free": 30,
+      "free": 8,
       "registered": 0,
-      "max_users": 30
+      "max_users": 8
     },
     {
       "date": "2026-12-05",
@@ -138,9 +138,9 @@
       "end_time": "21:30",
       "title": "דאנסהול",
       "coach": "נועם דוד",
-      "free": 29,
+      "free": 7,
       "registered": 1,
-      "max_users": 30
+      "max_users": 8
     },
     {
       "date": "2026-12-06",
@@ -188,9 +188,9 @@
       "end_time": "21:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "שליו פרידמן",
-      "free": 20,
+      "free": 8,
       "registered": 0,
-      "max_users": 20
+      "max_users": 8
     },
     {
       "date": "2026-12-08",
@@ -198,9 +198,9 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "גילי גרינשטיין",
-      "free": 15,
+      "free": 8,
       "registered": 0,
-      "max_users": 15
+      "max_users": 8
     },
     {
       "date": "2026-12-08",
@@ -208,9 +208,9 @@
       "end_time": "12:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "ליאור אייסיג",
-      "free": 20,
+      "free": 8,
       "registered": 0,
-      "max_users": 20
+      "max_users": 8
     },
     {
       "date": "2026-12-08",
@@ -218,9 +218,9 @@
       "end_time": "21:15",
       "title": "שיעור עקבים",
       "coach": "עינב יואלי",
-      "free": 20,
+      "free": 8,
       "registered": 0,
-      "max_users": 20
+      "max_users": 8
     },
     {
       "date": "2026-12-09",
@@ -228,9 +228,9 @@
       "end_time": "12:30",
       "title": "מאסטר קלאס איתן גורנו",
       "coach": "איתן גורנו",
-      "free": 28,
+      "free": 6,
       "registered": 2,
-      "max_users": 30
+      "max_users": 8
     },
     {
       "date": "2026-12-09",
@@ -238,9 +238,9 @@
       "end_time": "14:00",
       "title": "מאסטר קלאס מאיה שריקי",
       "coach": "מאיה שריקי",
-      "free": 30,
+      "free": 8,
       "registered": 0,
-      "max_users": 30
+      "max_users": 8
     },
     {
       "date": "2026-12-09",
@@ -248,9 +248,9 @@
       "end_time": "19:00",
       "title": "היפ הופ מתקדמים עם אופיר זר",
       "coach": "אופיר זר",
-      "free": 24,
+      "free": 7,
       "registered": 1,
-      "max_users": 25
+      "max_users": 8
     },
     {
       "date": "2026-12-09",
@@ -258,9 +258,9 @@
       "end_time": "20:30",
       "title": "מאסטר קלאס נומה",
       "coach": "נומה היינמן",
-      "free": 30,
+      "free": 8,
       "registered": 0,
-      "max_users": 30
+      "max_users": 8
     },
     {
       "date": "2026-12-10",
@@ -268,9 +268,9 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "עדי מיוחס",
-      "free": 15,
+      "free": 8,
       "registered": 0,
-      "max_users": 15
+      "max_users": 8
     },
     {
       "date": "2026-12-10",
@@ -278,9 +278,9 @@
       "end_time": "11:15",
       "title": "גמישות- הקשתות",
       "coach": "שי טולדנו",
-      "free": 15,
+      "free": 8,
       "registered": 0,
-      "max_users": 15
+      "max_users": 8
     },
     {
       "date": "2026-12-10",
@@ -288,9 +288,9 @@
       "end_time": "12:30",
       "title": "גמישות - שפגטים",
       "coach": "שי טולדנו",
-      "free": 15,
+      "free": 8,
       "registered": 0,
-      "max_users": 15
+      "max_users": 8
     },
     {
       "date": "2026-12-10",
@@ -298,9 +298,9 @@
       "end_time": "20:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "אדל אוייף",
-      "free": 20,
+      "free": 8,
       "registered": 0,
-      "max_users": 20
+      "max_users": 8
     },
     {
       "date": "2026-12-11",
@@ -308,9 +308,9 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "נומה היינמן",
-      "free": 15,
+      "free": 8,
       "registered": 0,
-      "max_users": 15
+      "max_users": 8
     },
     {
       "date": "2026-12-11",
@@ -318,9 +318,9 @@
       "end_time": "12:00",
       "title": "אימון מדרגה",
       "coach": "גמליאל",
-      "free": 15,
+      "free": 5,
       "registered": 0,
-      "max_users": 15
+      "max_users": 5
     },
     {
       "date": "2026-12-12",
@@ -328,9 +328,9 @@
       "end_time": "21:30",
       "title": "קולאב שחר ודני",
       "coach": "דניאל חזן",
-      "free": 29,
+      "free": 7,
       "registered": 1,
-      "max_users": 30
+      "max_users": 8
     },
     {
       "date": "2026-12-14",
@@ -338,9 +338,9 @@
       "end_time": "12:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "שליו פרידמן",
-      "free": 20,
+      "free": 8,
       "registered": 0,
-      "max_users": 20
+      "max_users": 8
     },
     {
       "date": "2026-12-15",
@@ -348,9 +348,9 @@
       "end_time": "11:00",
       "title": "שיעורי בר",
       "coach": "גילי גרינשטיין",
-      "free": 15,
+      "free": 8,
       "registered": 0,
-      "max_users": 15
+      "max_users": 8
     },
     {
       "date": "2026-12-15",
@@ -358,9 +358,9 @@
       "end_time": "12:15",
       "title": "היפהופ נשים מתחילות",
       "coach": "ליאור אייסיג",
-      "free": 20,
+      "free": 8,
       "registered": 0,
-      "max_users": 20
+      "max_users": 8
     },
     {
       "date": "2026-12-15",
@@ -368,9 +368,9 @@
       "end_time": "20:30",
       "title": "מאסטר קלאס נומה",
       "coach": "נומה היינמן",
-      "free": 30,
+      "free": 8,
       "registered": 0,
-      "max_users": 30
+      "max_users": 8
     },
     {
       "date": "2026-12-15",
@@ -378,9 +378,9 @@
       "end_time": "22:00",
       "title": "שיעור עקבים",
       "coach": "גניה גפונוב",
-      "free": 15,
+      "free": 8,
       "registered": 0,
-      "max_users": 15
+      "max_users": 8
     }
   ]
 }
